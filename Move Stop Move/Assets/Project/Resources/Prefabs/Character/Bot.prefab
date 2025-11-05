@@ -129,9 +129,9 @@ GameObject:
   - component: {fileID: 6411683389337410057}
   - component: {fileID: 6411683389337410071}
   - component: {fileID: 6411683389337410068}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bot
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -214,6 +214,10 @@ PrefabInstance:
     - target: {fileID: 7079919218563593500, guid: 0bcdc7d174ff79641a4487a022f363d6, type: 3}
       propertyPath: m_Name
       value: knife_001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7079919218563593500, guid: 0bcdc7d174ff79641a4487a022f363d6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7569211391400341414, guid: 0bcdc7d174ff79641a4487a022f363d6, type: 3}
       propertyPath: m_RootOrder
