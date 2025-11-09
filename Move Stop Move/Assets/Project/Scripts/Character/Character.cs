@@ -1,59 +1,78 @@
-   using System;
-   using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Character : GameUnit
 {
    [SerializeField] protected Transform skin;
    [SerializeField] protected float speed;
-   [SerializeField] protected float attackRangeSize;
+   [SerializeField] protected float throwRangeSize;
+   [SerializeField] protected Transform throwRange;
+   [SerializeField] protected Transform throwPos;
+   [SerializeField] protected GameObject throwItemPrefab;
    [SerializeField] protected Animator animator;
-   [SerializeField] protected Transform attackRange;
+   private EventsAnimManager _eventsAnimManager;
 
-   protected float AttackRangeSize
+   private float rangeSize
    {
-      get => attackRangeSize;
+      get => throwRangeSize;
       set
       {
-         attackRangeSize = value;
-         UpdateAttackRange();
+         throwRangeSize = value;
+         UpdateThrowRange();
       }
    }
+
    private string _currentAnim;
 
    private void Start()
    {
-      UpdateAttackRange();
-     
+      OnInit();
+      UpdateThrowRange();
+   }
+
+   private void OnInit()
+   {
+      _eventsAnimManager = EventsAnimManager.Get(animator);
+      if (_eventsAnimManager != null)
+      {
+         _eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
+         _eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
+      }
+   }
+
+   private void EndThrow()
+   {
+
    }
 
 #if UNITY_EDITOR
    private void OnValidate()
    {
-      UpdateAttackRange(); 
+      UpdateThrowRange();
    }
 
 #endif
-   private void UpdateAttackRange()
+   private void UpdateThrowRange()
    {
-      attackRange.localScale = new Vector3(attackRangeSize * 2, attackRangeSize * 2,1f);
+      throwRange.localScale = new Vector3(throwRangeSize * 2, throwRangeSize * 2, 1f);
    }
-
-  
 
    protected bool HasEnemyInRange()
    {
-       return Physics2D.OverlapCircle(attackRange.position, AttackRangeSize ,0, LayerMask.GetMask("Enemy"));
+      // return Physics2D.OverlapCircle(ThrowRange.position, AttackRangeSize, 0, LayerMask.GetMask("Enemy"));
+      Collider[] hits = Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
+      return hits.Length > 0;
    }
-   private void OnDrawGizmos()
+
+   private void OnDrawGizmosSelected()
    {
       Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(attackRange.position, AttackRangeSize);
+      Gizmos.DrawWireSphere(throwRange.position, rangeSize);
    }
+
    protected Vector3 CheckGround(Vector3 nextPoint)
    {
-      if (Physics.Raycast(nextPoint, Vector3.down, out var hit, 2f, 
+      if (Physics.Raycast(nextPoint, Vector3.down, out var hit, 2f,
              LayerMask.GetMask("Ground")))
       {
          return hit.point + Vector3.up * 1.1f;
@@ -61,6 +80,7 @@ public class Character : GameUnit
 
       return TF.position;
    }
+
    protected void ChangeAnim(string animName)
    {
       if (_currentAnim != animName)
@@ -70,4 +90,30 @@ public class Character : GameUnit
          animator.SetTrigger(_currentAnim);
       }
    }
+
+   private Transform GetNearestEnemy()
+   {
+      Collider[] hits = Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
+      if (hits.Length == 0) return null;
+
+      Collider nearest = hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
+      return nearest.transform;
+   }
+
+   private void OnThrow()
+   {
+      Transform target = GetNearestEnemy();
+      var position = throwPos.position;
+      if (target == null) return;
+      GameObject item = Instantiate(throwItemPrefab, position, Quaternion.identity);
+      Vector3 direction = (target.position - position).normalized;
+      Rigidbody rb = item.GetComponent<Rigidbody>();
+      if (rb != null)
+      {
+         rb.velocity = direction * 10; 
+
+      }
+
+   }
 }
+

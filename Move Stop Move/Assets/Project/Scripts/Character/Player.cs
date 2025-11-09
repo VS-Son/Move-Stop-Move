@@ -1,13 +1,11 @@
 using UnityEngine;
 public class Player : Character
 {
-   
     private void Update()
     {
-        Transform enemy;
         if (HasEnemyInRange())
         {
-            Debug.Log("Has Enemy in Range ");
+            ChangeAnim("attack");
         }
         if (Input.GetMouseButton(0))
         {
@@ -16,12 +14,14 @@ public class Player : Character
             if (JoystickControl.direct != Vector3.zero)
             {
                 skin.forward = JoystickControl.direct;
+                ChangeAnim("run");
             }
-            ChangeAnim("run");
+            
         }
         if (Input.GetMouseButtonUp(0))
         {
             ChangeAnim("idle");
         }
     }
+    
 }
