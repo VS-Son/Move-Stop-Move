@@ -88,13 +88,17 @@ public class Character : GameUnit
    {
       if (_currentAnim != animName)
       {
-         animator.ResetTrigger(_currentAnim);
+         // Chỉ reset trigger nếu _currentAnim không rỗng và hợp lệ
+         if (!string.IsNullOrEmpty(_currentAnim))
+         {
+            animator.ResetTrigger(_currentAnim);
+         }
          _currentAnim = animName;
          animator.SetTrigger(_currentAnim);
       }
    }
 
-   private Transform GetNearestEnemy()
+   protected Transform GetNearestEnemy()
    {
       if (Hits.Length == 0) return null;
       Collider nearest = Hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();

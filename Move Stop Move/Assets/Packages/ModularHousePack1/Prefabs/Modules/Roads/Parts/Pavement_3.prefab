@@ -11,9 +11,6 @@ GameObject:
   - component: {fileID: 3606220129536308856}
   - component: {fileID: 3943978823901025709}
   - component: {fileID: 5539283142074314622}
-  - component: {fileID: 3596989074078567660}
-  - component: {fileID: 7126692210700060211}
-  - component: {fileID: 7152968427023109898}
   m_Layer: 0
   m_Name: Pavement_3
   m_TagString: Untagged
@@ -86,42 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3596989074078567660
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2521972892557217175}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.8803654, y: 0.29999998, z: 6.6497946}
-  m_Center: {x: -3.3134146, y: -0.060000002, z: -0.4407767}
---- !u!65 &7126692210700060211
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2521972892557217175}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 7.519271, y: 0.29999998, z: 0.87699723}
-  m_Center: {x: 0.006038189, y: -0.060000002, z: 3.3271747}
---- !u!65 &7152968427023109898
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2521972892557217175}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.868886, y: 0.29999998, z: 0.86717844}
-  m_Center: {x: 3.3312306, y: -0.060000002, z: -3.3200085}

@@ -8,14 +8,26 @@ public class Player : Character
         if (Input.GetMouseButton(0))
         {
             _isMoving = true;
-           
-            
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             _isMoving = false;
-            ChangeAnim(HasEnemyInRange() ? "attack" : "idle");
+            if (HasEnemyInRange())
+            {
+                ChangeAnim("attack");
+                Transform target = GetNearestEnemy();
+                Vector3 directionToTarget = (target.position - TF.position).normalized;
+                directionToTarget.y = 0; 
+                if (directionToTarget != Vector3.zero)
+                {
+                    skin.forward = directionToTarget;
+                }
+            }
+            else
+            {
+                ChangeAnim("idle");
+            }
         }
 
     

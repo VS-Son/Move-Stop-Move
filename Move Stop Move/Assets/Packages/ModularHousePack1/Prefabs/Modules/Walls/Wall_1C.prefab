@@ -94,7 +94,6 @@ GameObject:
   - component: {fileID: 420787356656819928}
   - component: {fileID: 5133209913250566967}
   - component: {fileID: 3826522266462648055}
-  - component: {fileID: 1644035449894822852}
   m_Layer: 0
   m_Name: ExteriorToInterior_wall
   m_TagString: Untagged
@@ -167,19 +166,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1644035449894822852
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6803632214758307954}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.5, y: 2.5, z: 0.19999997}
-  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!1 &7077544290105935071
 GameObject:
   m_ObjectHideFlags: 0
