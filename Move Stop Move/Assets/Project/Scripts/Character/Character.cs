@@ -11,6 +11,7 @@ public class Character : GameUnit
    [SerializeField] protected GameObject throwItemPrefab;
    [SerializeField] protected Animator animator;
    private EventsAnimManager _eventsAnimManager;
+   private Collider[] Hits =>  Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
 
    private float rangeSize
    {
@@ -20,6 +21,7 @@ public class Character : GameUnit
          throwRangeSize = value;
          UpdateThrowRange();
       }
+      
    }
 
    private string _currentAnim;
@@ -28,6 +30,7 @@ public class Character : GameUnit
    {
       OnInit();
       UpdateThrowRange();
+      
    }
 
    private void OnInit()
@@ -60,8 +63,8 @@ public class Character : GameUnit
    protected bool HasEnemyInRange()
    {
       // return Physics2D.OverlapCircle(ThrowRange.position, AttackRangeSize, 0, LayerMask.GetMask("Enemy"));
-      Collider[] hits = Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
-      return hits.Length > 0;
+      // Collider[] hits = Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
+      return Hits.Length > 0;
    }
 
    private void OnDrawGizmosSelected()
@@ -93,10 +96,8 @@ public class Character : GameUnit
 
    private Transform GetNearestEnemy()
    {
-      Collider[] hits = Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
-      if (hits.Length == 0) return null;
-
-      Collider nearest = hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
+      if (Hits.Length == 0) return null;
+      Collider nearest = Hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
       return nearest.transform;
    }
 
