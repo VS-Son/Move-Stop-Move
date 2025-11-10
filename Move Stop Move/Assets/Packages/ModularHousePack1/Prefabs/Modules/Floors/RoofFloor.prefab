@@ -88,7 +88,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interior_FloorToRoof
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9186498050333781316, guid: 3e97ec32f94307548bbf0a0346589316, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 3e97ec32f94307548bbf0a0346589316, type: 3}
 --- !u!4 &3978149446974165816 stripped
 Transform:
