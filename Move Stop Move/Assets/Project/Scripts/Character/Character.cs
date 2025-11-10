@@ -88,7 +88,6 @@ public class Character : GameUnit
    {
       if (_currentAnim != animName)
       {
-         // Chỉ reset trigger nếu _currentAnim không rỗng và hợp lệ
          if (!string.IsNullOrEmpty(_currentAnim))
          {
             animator.ResetTrigger(_currentAnim);
