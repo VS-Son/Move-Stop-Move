@@ -8,37 +8,23 @@ public class Player : Character
         if (Input.GetMouseButton(0))
         {
             _isMoving = true;
+           
+            
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             _isMoving = false;
-            if (HasEnemyInRange())
-            {
-                ChangeAnim("attack");
-                Transform target = GetNearestEnemy();
-                Vector3 directionToTarget = (target.position - TF.position).normalized;
-                directionToTarget.y = 0; 
-                if (directionToTarget != Vector3.zero)
-                {
-                    skin.forward = directionToTarget;
-                }
-            }
-            else
-            {
-                ChangeAnim("idle");
-            }
+            ChangeAnim(HasEnemyInRange() ? "attack" : "idle");
         }
-
-    
     }
 
     private void FixedUpdate()
     {
         if (_isMoving)
         {
-            Vector3 nextPoint = JoystickControl.direct * speed * Time.fixedDeltaTime + TF.position;
-            TF.position = CheckGround(nextPoint);
+            Vector3 nextPoint = JoystickControl.direct * speed * Time.fixedDeltaTime + transform.position;
+            transform.position = CheckGround(nextPoint);
             if (JoystickControl.direct != Vector3.zero)
             {
                 skin.forward = JoystickControl.direct;

@@ -1,20 +1,22 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Character : GameUnit
+public class Character: Singleton<Character>
 {
    [SerializeField] protected Transform skin;
    [SerializeField] protected float speed;
    [SerializeField] protected float throwRangeSize;
-   [SerializeField] protected Transform throwRange;
+    public Transform throwRange;
    [SerializeField] protected Transform throwPos;
    [SerializeField] protected ThrowItem throwItemPrefab;
    [SerializeField] protected Animator animator;
-   private bool isThrowing = false;
    private EventsAnimManager eventsAnimManager => EventsAnimManager.Get(animator);
    private Collider[] hits =>  Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
-
-   private float rangeSize
+  private Queue<ThrowItem> listThrowItems = new Queue<ThrowItem>(); 
+   public float rangeSize
    {
       get => throwRangeSize;
       set
@@ -81,7 +83,7 @@ public class Character : GameUnit
          return hit.point + Vector3.up * 1.1f;
       }
 
-      return TF.position;
+      return transform.position;
    }
 
    protected void ChangeAnim(string animName)
@@ -111,12 +113,27 @@ public class Character : GameUnit
       if (target == null) return;
       ThrowItem item = Instantiate(throwItemPrefab, position, Quaternion.identity);
       Vector3 direction = (target.position - position).normalized;
-      Rigidbody rb = item.GetComponent<Rigidbody>();
-      if (rb != null)
+      listThrowItems.Enqueue(item);
+      StartCoroutine(HideItemThrow());
+      if (item.rigidbody != null)
       {
-         rb.velocity = direction * 10;
+         item.rigidbody.velocity = direction * 10;
+      }
+   }
+
+ 
+
+   IEnumerator HideItemThrow()
+   {
+      foreach (var t in listThrowItems)
+      {
+         if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize )
+         {
+            t.gameObject.SetActive(false);
+         }
       }
 
+      yield return null;
    }
 }
 

@@ -7,14 +7,24 @@ public class ThrowItem : MonoBehaviour
 {
     private Rigidbody _rigidbody;
 
-    private void Start()
+    public Rigidbody rigidbody
     {
-        _rigidbody = GetComponent<Rigidbody>();
-
+        get => _rigidbody;
+        set
+        {
+            _rigidbody = value;
+            _rigidbody = GetComponent<Rigidbody>();
+        } 
+        
     }
-
-    public void OnThrow(Vector3 direction, float speed)
+    private Character Character => Character.Instance;
+    
+    private IEnumerator HideItemThrow()
     {
-        _rigidbody.velocity = direction * speed;
+        if (Vector3.Distance(transform.position, Character.throwRange.position) > Character.rangeSize)
+        {
+            gameObject.SetActive(false);
+        }
+        yield return null;
     }
 }
