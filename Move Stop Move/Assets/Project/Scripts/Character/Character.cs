@@ -15,7 +15,10 @@ public class Character: Singleton<Character>
    [SerializeField] protected Animator animator;
    private EventsAnimManager eventsAnimManager => EventsAnimManager.Get(animator);
    private Collider[] hits =>  Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
-  private Queue<ThrowItem> listThrowItems = new Queue<ThrowItem>(); 
+   protected  Transform target => GetNearestEnemy();
+   private Queue<ThrowItem> listThrowItems = new Queue<ThrowItem>(); 
+   private Coroutine _hideCoroutine;
+
    public float rangeSize
    {
       get => throwRangeSize;
@@ -108,32 +111,42 @@ public class Character: Singleton<Character>
 
    private void OnThrow()
    {
-      Transform target = GetNearestEnemy();
+     
       var position = throwPos.position;
       if (target == null) return;
+
       ThrowItem item = Instantiate(throwItemPrefab, position, Quaternion.identity);
-      Vector3 direction = (target.position - position).normalized;
       listThrowItems.Enqueue(item);
-      StartCoroutine(HideItemThrow());
-      if (item.rigidbody != null)
+
+      Vector3 direction = (target.position - position).normalized;
+      Rigidbody rb = item.GetComponent<Rigidbody>();
+      if (rb != null)
       {
-         item.rigidbody.velocity = direction * 10;
+         rb.velocity = direction * 10;
+      }
+
+      if (_hideCoroutine == null)
+      {
+         _hideCoroutine = StartCoroutine(HideWeaponThrow());
       }
    }
-
- 
-
-   IEnumerator HideItemThrow()
+   
+   IEnumerator HideWeaponThrow()
    {
-      foreach (var t in listThrowItems)
+      while (listThrowItems.Count > 0)
       {
-         if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize )
+         foreach (var t in listThrowItems.ToArray())
          {
-            t.gameObject.SetActive(false);
+            if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize)
+            {
+               t.gameObject.SetActive(false);
+            }
          }
-      }
 
-      yield return null;
+         yield return null;
+      }
+      _hideCoroutine = null;
    }
+
 }
 

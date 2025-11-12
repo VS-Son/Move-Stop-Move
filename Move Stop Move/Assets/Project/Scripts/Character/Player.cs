@@ -1,4 +1,5 @@
 using System;
+using Cinemachine;
 using UnityEngine;
 public class Player : Character
 {
@@ -15,7 +16,15 @@ public class Player : Character
         if (Input.GetMouseButtonUp(0))
         {
             _isMoving = false;
-            ChangeAnim(HasEnemyInRange() ? "attack" : "idle");
+            if (HasEnemyInRange())
+            {
+                ChangeAnim("attack");
+                Vector3 direction = (target.position - transform.position).normalized;
+                if (direction != Vector3.zero)
+                {
+                    skin.forward = direction;
+                }
+            }
         }
     }
 
