@@ -9,7 +9,7 @@ public class Character: Singleton<Character>
    [SerializeField] protected Transform skin;
    [SerializeField] protected float speed;
    [SerializeField] protected float throwRangeSize;
-    public Transform throwRange;
+   [SerializeField] protected Transform throwRange;
    [SerializeField] protected Transform throwPos;
    [SerializeField] protected ThrowItem throwItemPrefab;
    [SerializeField] protected Animator animator;
@@ -67,8 +67,6 @@ public class Character: Singleton<Character>
 
    protected bool HasEnemyInRange()
    {
-      // return Physics2D.OverlapCircle(ThrowRange.position, AttackRangeSize, 0, LayerMask.GetMask("Enemy"));
-      // Collider[] hits = Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
       return hits.Length > 0;
    }
 
@@ -115,14 +113,13 @@ public class Character: Singleton<Character>
       var position = throwPos.position;
       if (target == null) return;
 
-      ThrowItem item = Instantiate(throwItemPrefab, position, Quaternion.identity);
+      ThrowItem item = SimplePool.Spawn<ThrowItem>(throwItemPrefab, position, Quaternion.identity);
       listThrowItems.Enqueue(item);
 
-      Vector3 direction = (target.position - position).normalized;
       Rigidbody rb = item.GetComponent<Rigidbody>();
       if (rb != null)
       {
-         rb.velocity = direction * 10;
+         rb.velocity = skin.forward * 10;
       }
 
       if (_hideCoroutine == null)
@@ -137,9 +134,9 @@ public class Character: Singleton<Character>
       {
          foreach (var t in listThrowItems.ToArray())
          {
-            if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize)
+            if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize + 0.5f)
             {
-               t.gameObject.SetActive(false);
+               SimplePool.Despawn(t);
             }
          }
 
@@ -148,5 +145,6 @@ public class Character: Singleton<Character>
       _hideCoroutine = null;
    }
 
+   
 }
 

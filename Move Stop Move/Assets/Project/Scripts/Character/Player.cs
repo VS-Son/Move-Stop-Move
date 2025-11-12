@@ -25,6 +25,10 @@ public class Player : Character
                     skin.forward = direction;
                 }
             }
+            else
+            {
+                ChangeAnim("idle");
+            }
         }
     }
 
