@@ -367,6 +367,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1902885345, guid: 2d36845a09a202d43886d01a0e96f7e5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902885345, guid: 2d36845a09a202d43886d01a0e96f7e5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6113061349904942559, guid: 2d36845a09a202d43886d01a0e96f7e5, type: 3}
+      propertyPath: throwRangeSize
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6411683389337410056, guid: 2d36845a09a202d43886d01a0e96f7e5, type: 3}
       propertyPath: m_Name
       value: Player

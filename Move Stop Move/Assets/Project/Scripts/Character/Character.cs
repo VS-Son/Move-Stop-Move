@@ -8,10 +8,11 @@ public class Character : GameUnit
    [SerializeField] protected float throwRangeSize;
    [SerializeField] protected Transform throwRange;
    [SerializeField] protected Transform throwPos;
-   [SerializeField] protected GameObject throwItemPrefab;
+   [SerializeField] protected ThrowItem throwItemPrefab;
    [SerializeField] protected Animator animator;
-   private EventsAnimManager _eventsAnimManager;
-   private Collider[] Hits =>  Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
+   private bool isThrowing = false;
+   private EventsAnimManager eventsAnimManager => EventsAnimManager.Get(animator);
+   private Collider[] hits =>  Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
 
    private float rangeSize
    {
@@ -35,11 +36,10 @@ public class Character : GameUnit
 
    private void OnInit()
    {
-      _eventsAnimManager = EventsAnimManager.Get(animator);
-      if (_eventsAnimManager != null)
+      if (eventsAnimManager != null)
       {
-         _eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
-         _eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
+         eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
+         eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
       }
    }
 
@@ -64,7 +64,7 @@ public class Character : GameUnit
    {
       // return Physics2D.OverlapCircle(ThrowRange.position, AttackRangeSize, 0, LayerMask.GetMask("Enemy"));
       // Collider[] hits = Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
-      return Hits.Length > 0;
+      return hits.Length > 0;
    }
 
    private void OnDrawGizmosSelected()
@@ -99,8 +99,8 @@ public class Character : GameUnit
 
    protected Transform GetNearestEnemy()
    {
-      if (Hits.Length == 0) return null;
-      Collider nearest = Hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
+      if (hits.Length == 0) return null;
+      Collider nearest = hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
       return nearest.transform;
    }
 
@@ -109,13 +109,12 @@ public class Character : GameUnit
       Transform target = GetNearestEnemy();
       var position = throwPos.position;
       if (target == null) return;
-      GameObject item = Instantiate(throwItemPrefab, position, Quaternion.identity);
+      ThrowItem item = Instantiate(throwItemPrefab, position, Quaternion.identity);
       Vector3 direction = (target.position - position).normalized;
       Rigidbody rb = item.GetComponent<Rigidbody>();
       if (rb != null)
       {
-         rb.velocity = direction * 10; 
-
+         rb.velocity = direction * 10;
       }
 
    }

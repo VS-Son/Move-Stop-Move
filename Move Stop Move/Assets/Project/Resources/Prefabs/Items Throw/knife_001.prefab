@@ -95,17 +95,15 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.06669855, y: 0.5529992, z: 0.151921}
   m_Center: {x: 0.00000008754434, y: 0.1893823, z: -0.000000078231096}
---- !u!64 &4922622464403027824
-MeshCollider:
+--- !u!114 &4436949512022866384
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7079919218563593500}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7039088848386547499, guid: b3e0aac5a7001ab4f892a4c1c3d2a1cc, type: 3}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 954a7fa860851e84b8c2965291b77f0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

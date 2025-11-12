@@ -254,7 +254,7 @@ MonoBehaviour:
   throwRangeSize: 3.63
   throwRange: {fileID: 1902885345}
   throwPos: {fileID: 521552158921520234}
-  throwItemPrefab: {fileID: 7079919218563593500, guid: ef7c5338b0853964c9b7ab0aa363c47e, type: 3}
+  throwItemPrefab: {fileID: 4436949512022866384, guid: ef7c5338b0853964c9b7ab0aa363c47e, type: 3}
   animator: {fileID: 7238542907135465096}
 --- !u!136 &6411683389337410057
 CapsuleCollider:

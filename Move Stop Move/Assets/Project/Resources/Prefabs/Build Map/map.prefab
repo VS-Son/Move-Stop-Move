@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 152981141389646061}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34,8 +34,8 @@ Transform:
   - {fileID: 2598281668459945856}
   - {fileID: 8108531188494936339}
   - {fileID: 4091081437226210954}
-  m_Father: {fileID: 8182377525108517332}
-  m_RootOrder: 2
+  m_Father: {fileID: 6754802072997414861}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &302301073497052203
 Tilemap:
@@ -298,7 +298,7 @@ Transform:
   - {fileID: 6444975105328135831}
   - {fileID: 1298782616120142617}
   m_Father: {fileID: 8182377525108517332}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &5184532611857996251
 Tilemap:
@@ -521,6 +521,7 @@ Transform:
   - {fileID: 274427735301902091}
   - {fileID: 4152053338788522223}
   - {fileID: 7420979334356151193}
+  - {fileID: 531436654979893426}
   m_Father: {fileID: 8182377525108517332}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -550,7 +551,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.33333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 71c8a48e82414d24cb44ff3445842361, type: 2}
   m_BuildHeightMesh: 0
@@ -877,7 +878,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8182377525108517332}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1847095927946349711
 MeshFilter:
@@ -1149,7 +1150,6 @@ Transform:
   m_Children:
   - {fileID: 6754802072997414861}
   - {fileID: 6760426258174865283}
-  - {fileID: 531436654979893426}
   - {fileID: 7043044224213483121}
   - {fileID: 65940605121648057}
   m_Father: {fileID: 0}
