@@ -18,10 +18,9 @@ public class PoolController : MonoBehaviour
             ParticlePool.Preload(Particle[i].prefab, Particle[i].amount, Particle[i].root);
         }
 
-        for (int i = 0; i < Pool.Length; i++)
+        foreach (var pool in Pool)
         {
-            SimplePool.Preload(Pool[i].prefab, Pool[i].amount, Pool[i].root, Pool[i].collect, Pool[i].clamp);
+            SimplePool.Preload(pool.prefab, pool.amount, pool.root, pool.collect, pool.clamp);
         }
-
     }
 }

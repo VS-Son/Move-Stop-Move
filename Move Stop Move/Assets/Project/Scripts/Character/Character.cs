@@ -100,7 +100,7 @@ public class Character: Singleton<Character>
       }
    }
 
-   protected Transform GetNearestEnemy()
+   private Transform GetNearestEnemy()
    {
       if (hits.Length == 0) return null;
       Collider nearest = hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
