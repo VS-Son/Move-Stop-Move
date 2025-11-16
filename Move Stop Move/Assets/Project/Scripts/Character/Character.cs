@@ -6,13 +6,7 @@ using System.Linq;
 
 public class Character: Singleton<Character>
 {
-   [SerializeField] protected Transform skin;
-   [SerializeField] protected float speed;
-   [SerializeField] protected float throwRangeSize;
-   [SerializeField] protected Transform throwRange;
-   [SerializeField] protected Transform throwPos;
-   [SerializeField] protected ThrowItem throwItemPrefab;
-   [SerializeField] protected Animator animator;
+  
    private EventsAnimManager eventsAnimManager => EventsAnimManager.Get(animator);
    private Collider[] hits =>  Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
    protected  Transform target => GetNearestEnemy();
