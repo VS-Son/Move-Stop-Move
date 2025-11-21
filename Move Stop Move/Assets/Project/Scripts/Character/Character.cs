@@ -1,151 +1,138 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using Project.Scripts.Character.Attack;
+using Project.Scripts.Character.EventAnim;
+using Project.Scripts.Pool;
+using UnityEngine;
 
-public class Character: Singleton<Character>
+namespace Project.Scripts.Character
 {
-   [SerializeField] protected Transform skin;
-   [SerializeField] protected float speed;
-   [SerializeField] protected float throwRangeSize;
-   [SerializeField] protected Transform throwRange;
-   [SerializeField] protected Transform throwPos;
-   [SerializeField] protected ThrowItem throwItemPrefab;
-   [SerializeField] protected Animator animator;
+    public class Character : GameUnit
+    {
+        [SerializeField] protected Transform skin;
+        [SerializeField] protected float speed;
+        [SerializeField] protected float throwRangeSize;
+        [SerializeField] protected Transform throwRange;
+        [SerializeField] protected Transform throwPos;
+        [SerializeField] protected ThrowItem throwItemPrefab;
+        [SerializeField] protected Animator animator;
 
-   private EventsAnimManager eventsAnimManager => EventsAnimManager.Get(animator);
-   private Collider[] hits =>  Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"));
-   protected  Transform target => GetNearestEnemy();
-   private Queue<ThrowItem> listThrowItems = new Queue<ThrowItem>(); 
-   private Coroutine _hideCoroutine;
+        private string _currentAnim;
+        private Coroutine _hideCoroutine;
+        private readonly Queue<ThrowItem> listThrowItems = new();
+        private EventsAnimManager eventsAnimManager => EventsAnimManager.Get(animator);
 
-   public float rangeSize
-   {
-      get => throwRangeSize;
-      set
-      {
-         throwRangeSize = value;
-         UpdateThrowRange();
-      }
-      
-   }
+        private Collider[] hits => Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"))
+            .Where(col => col.transform != transform).ToArray();
 
-   private string _currentAnim;
+        protected Transform target => GetNearestEnemy();
 
-   private void Start()
-   {
-      OnInit();
-      UpdateThrowRange();
-      
-   }
+        public float rangeSize
+        {
+            get => throwRangeSize;
+            set
+            {
+                throwRangeSize = value;
+                UpdateThrowRange();
+            }
+        }
 
-   private void OnInit()
-   {
-      if (eventsAnimManager != null)
-      {
-         eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
-         eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
-      }
-   }
+        private void Start()
+        {
+            OnInit();
+            UpdateThrowRange();
+        }
 
-   private void EndThrow()
-   {
-
-   }
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(throwRange.position, rangeSize);
+        }
 
 #if UNITY_EDITOR
-   private void OnValidate()
-   {
-      UpdateThrowRange();
-   }
+        private void OnValidate()
+        {
+            UpdateThrowRange();
+        }
 
 #endif
-   private void UpdateThrowRange()
-   {
-      throwRange.localScale = new Vector3(throwRangeSize * 2, throwRangeSize * 2, 1f);
-   }
 
-   protected bool HasEnemyInRange()
-   {
-      return hits.Length > 0;
-   }
-
-   private void OnDrawGizmosSelected()
-   {
-      Gizmos.color = Color.red;
-      Gizmos.DrawWireSphere(throwRange.position, rangeSize);
-   }
-
-   protected Vector3 CheckGround(Vector3 nextPoint)
-   {
-      if (Physics.Raycast(nextPoint, Vector3.down, out var hit, 2f,
-             LayerMask.GetMask("Ground")))
-      {
-         return hit.point + Vector3.up * 1.1f;
-      }
-
-      return transform.position;
-   }
-
-   protected void ChangeAnim(string animName)
-   {
-      if (_currentAnim != animName)
-      {
-         if (!string.IsNullOrEmpty(_currentAnim))
-         {
-            animator.ResetTrigger(_currentAnim);
-         }
-         _currentAnim = animName;
-         animator.SetTrigger(_currentAnim);
-      }
-   }
-
-   private Transform GetNearestEnemy()
-   {
-      if (hits.Length == 0) return null;
-      Collider nearest = hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
-      return nearest.transform;
-   }
-
-   private void OnThrow()
-   {
-     
-      var position = throwPos.position;
-      if (target == null) return;
-
-      ThrowItem item = SimplePool.Spawn<ThrowItem>(throwItemPrefab, position, Quaternion.identity);
-      listThrowItems.Enqueue(item);
-
-      Rigidbody rb = item.GetComponent<Rigidbody>();
-      if (rb != null)
-      {
-         rb.velocity = skin.forward * 10;
-      }
-
-      if (_hideCoroutine == null)
-      {
-         _hideCoroutine = StartCoroutine(HideWeaponThrow());
-      }
-   }
-   
-   IEnumerator HideWeaponThrow()
-   {
-      while (listThrowItems.Count > 0)
-      {
-         foreach (var t in listThrowItems.ToArray())
-         {
-            if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize + 0.5f)
+        private void OnInit()
+        {
+            if (eventsAnimManager != null)
             {
-               SimplePool.Despawn(t);
+                eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
+                eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
             }
-         }
+        }
 
-         yield return null;
-      }
-      _hideCoroutine = null;
-   }
+        private void EndThrow()
+        {
+        }
 
-   
+        private void UpdateThrowRange()
+        {
+            throwRange.localScale = new Vector3(throwRangeSize * 2, throwRangeSize * 2, 1f);
+        }
+
+        protected bool HasEnemyInRange()
+        {
+            return hits.Length > 0;
+        }
+
+        protected Vector3 CheckGround(Vector3 nextPoint)
+        {
+            if (Physics.Raycast(nextPoint, Vector3.down, out var hit, 2f,
+                    LayerMask.GetMask("Ground")))
+                return hit.point + Vector3.up * 1.1f;
+
+            return transform.position;
+        }
+
+        protected void ChangeAnim(string animName)
+        {
+            if (_currentAnim != animName)
+            {
+                if (!string.IsNullOrEmpty(_currentAnim)) animator.ResetTrigger(_currentAnim);
+                _currentAnim = animName;
+                animator.SetTrigger(_currentAnim);
+            }
+        }
+
+        private Transform GetNearestEnemy()
+        {
+            if (hits.Length == 0) return null;
+            var nearest = hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
+            return nearest.transform;
+        }
+
+        private void OnThrow()
+        {
+            var position = throwPos.position;
+            if (target == null) return;
+
+            var item = SimplePool.Spawn<ThrowItem>(throwItemPrefab, position, Quaternion.identity);
+            listThrowItems.Enqueue(item);
+
+            var rb = item.GetComponent<Rigidbody>();
+            if (rb != null) rb.velocity = skin.forward * 10;
+
+            if (_hideCoroutine == null) _hideCoroutine = StartCoroutine(HideWeaponThrow());
+        }
+
+        private IEnumerator HideWeaponThrow()
+        {
+            while (listThrowItems.Count > 0)
+            {
+                foreach (var t in listThrowItems.ToArray())
+                    if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize + 0.5f)
+                        SimplePool.Despawn(t);
+
+                yield return null;
+            }
+
+            _hideCoroutine = null;
+        }
+    }
 }
-

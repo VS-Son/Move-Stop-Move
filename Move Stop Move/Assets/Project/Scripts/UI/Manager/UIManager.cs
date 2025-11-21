@@ -1,22 +1,21 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using Project.Scripts.UI.Manager;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
-using System.Numerics;
 
 public class UIManager : Singleton<UIManager>
 {
+    public Transform CanvasParentTF;
+
+    //dict for UI active
+    private readonly Dictionary<Type, UICanvas> uiCanvas = new();
+
     //dict for quick query UI prefab
-    private Dictionary<System.Type, UICanvas> uiCanvasPrefab = new Dictionary<System.Type, UICanvas>();
+    private readonly Dictionary<Type, UICanvas> uiCanvasPrefab = new();
 
     //list from resource
     private UICanvas[] uiResources;
-
-    //dict for UI active
-    private Dictionary<System.Type, UICanvas> uiCanvas = new Dictionary<System.Type, UICanvas>();
-
-    public Transform CanvasParentTF;
 
     #region Canvas
 
@@ -32,10 +31,7 @@ public class UIManager : Singleton<UIManager>
 
     public void CloseUI<T>() where T : UICanvas
     {
-        if (IsOpened<T>())
-        {
-            GetUI<T>().Close();
-        }
+        if (IsOpened<T>()) GetUI<T>().Close();
     }
 
     public bool IsOpened<T>() where T : UICanvas
@@ -46,7 +42,7 @@ public class UIManager : Singleton<UIManager>
 
     public bool IsLoaded<T>() where T : UICanvas
     {
-        System.Type type = typeof(T);
+        var type = typeof(T);
         return uiCanvas.ContainsKey(type) && uiCanvas[type] != null;
     }
 
@@ -66,39 +62,32 @@ public class UIManager : Singleton<UIManager>
     {
         if (!uiCanvasPrefab.ContainsKey(typeof(T)))
         {
-            if (uiResources == null)
-            {
-                uiResources = Resources.LoadAll<UICanvas>("UI/");
-            }
+            if (uiResources == null) uiResources = Resources.LoadAll<UICanvas>("UI/");
 
-            for (int i = 0; i < uiResources.Length; i++)
-            {
+            for (var i = 0; i < uiResources.Length; i++)
                 if (uiResources[i] is T)
                 {
                     uiCanvasPrefab[typeof(T)] = uiResources[i];
                     break;
                 }
-            }
         }
 
         return uiCanvasPrefab[typeof(T)] as T;
     }
 
-
     #endregion
 
     #region Back Button
 
-    private Dictionary<UICanvas, UnityAction> BackActionEvents = new Dictionary<UICanvas, UnityAction>();
-    private List<UICanvas> backCanvas = new List<UICanvas>();
-    UICanvas BackTopUI {
+    private readonly Dictionary<UICanvas, UnityAction> BackActionEvents = new();
+    private readonly List<UICanvas> backCanvas = new();
+
+    private UICanvas BackTopUI
+    {
         get
         {
             UICanvas canvas = null;
-            if (backCanvas.Count > 0)
-            {
-                canvas = backCanvas[backCanvas.Count - 1];
-            }
+            if (backCanvas.Count > 0) canvas = backCanvas[backCanvas.Count - 1];
 
             return canvas;
         }
@@ -107,26 +96,17 @@ public class UIManager : Singleton<UIManager>
 
     private void LateUpdate()
     {
-        if (Input.GetKey(KeyCode.Escape) && BackTopUI != null)
-        {
-            BackActionEvents[BackTopUI]?.Invoke();
-        }
+        if (Input.GetKey(KeyCode.Escape) && BackTopUI != null) BackActionEvents[BackTopUI]?.Invoke();
     }
 
     public void PushBackAction(UICanvas canvas, UnityAction action)
     {
-        if (!BackActionEvents.ContainsKey(canvas))
-        {
-            BackActionEvents.Add(canvas, action);
-        }
+        if (!BackActionEvents.ContainsKey(canvas)) BackActionEvents.Add(canvas, action);
     }
 
     public void AddBackUI(UICanvas canvas)
     {
-        if (!backCanvas.Contains(canvas))
-        {
-            backCanvas.Add(canvas);
-        }
+        if (!backCanvas.Contains(canvas)) backCanvas.Add(canvas);
     }
 
     public void RemoveBackUI(UICanvas canvas)
@@ -135,7 +115,7 @@ public class UIManager : Singleton<UIManager>
     }
 
     /// <summary>
-    /// CLear backey when comeback index UI canvas
+    ///     CLear backey when comeback index UI canvas
     /// </summary>
     public void ClearBackKey()
     {
@@ -143,6 +123,4 @@ public class UIManager : Singleton<UIManager>
     }
 
     #endregion
-
-
 }

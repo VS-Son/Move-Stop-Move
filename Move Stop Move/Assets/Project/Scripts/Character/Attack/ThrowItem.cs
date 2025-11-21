@@ -1,24 +1,25 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Project.Scripts.Pool;
 using UnityEngine;
 
-public class ThrowItem : GameUnit
+namespace Project.Scripts.Character.Attack
 {
-    private Rigidbody _rigidbody ;
+    public class ThrowItem : GameUnit
+    {
+        private Rigidbody _rigidbody ;
 
     
-    private void Start()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-    
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Enemy"))
+        private void Start()
         {
-            SimplePool.Despawn(this);
+            _rigidbody = GetComponent<Rigidbody>();
+    
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Enemy"))
+            {
+                SimplePool.Despawn(this);
+            }
         }
     }
 }

@@ -936,7 +936,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6411683389337410070, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.34
+      value: -2.32
       objectReference: {fileID: 0}
     - target: {fileID: 6411683389337410070, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1048,8 +1048,8 @@ MonoBehaviour:
     collect: 1
     clamp: 0
   - root: {fileID: 1783166314}
-    prefab: {fileID: 4436949512022866384, guid: ef7c5338b0853964c9b7ab0aa363c47e, type: 3}
-    amount: 1
+    prefab: {fileID: 8917077487118212840, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
+    amount: 10
     collect: 1
     clamp: 0
   Particle: []
@@ -1140,6 +1140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnRadius: 20
+  minDistance: 10
   maxAttempts: 30
   numberBots: 5
 --- !u!1 &1783166313

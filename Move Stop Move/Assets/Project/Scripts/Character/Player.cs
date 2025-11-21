@@ -1,49 +1,51 @@
-using System;
-using Cinemachine;
 using UnityEngine;
-public class Player : Character
+
+namespace Project.Scripts.Character
 {
-    private bool _isMoving = false;
-    private void Update()
+    public class Player : Character
     {
-        if (Input.GetMouseButton(0))
+        private bool _isMoving = false;
+        private void Update()
         {
-            _isMoving = true;
+            if (Input.GetMouseButton(0))
+            {
+                _isMoving = true;
            
             
-        }
+            }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            _isMoving = false;
-            if (HasEnemyInRange())
+            if (Input.GetMouseButtonUp(0))
             {
-                ChangeAnim("attack");
-                Vector3 direction = (target.position - transform.position).normalized;
-                if (direction != Vector3.zero)
+                _isMoving = false;
+                if (HasEnemyInRange())
                 {
-                    skin.forward = direction;
+                    ChangeAnim("attack");
+                    Vector3 direction = (target.position - transform.position).normalized;
+                    if (direction != Vector3.zero)
+                    {
+                        skin.forward = direction;
+                    }
+                }
+                else
+                {
+                    ChangeAnim("idle");
                 }
             }
-            else
-            {
-                ChangeAnim("idle");
-            }
         }
-    }
 
-    private void FixedUpdate()
-    {
-        if (_isMoving)
+        private void FixedUpdate()
         {
-            Vector3 nextPoint = JoystickControl.direct * speed * Time.fixedDeltaTime + transform.position;
-            transform.position = CheckGround(nextPoint);
-            if (JoystickControl.direct != Vector3.zero)
+            if (_isMoving)
             {
-                skin.forward = JoystickControl.direct;
-                ChangeAnim("run");
+                Vector3 nextPoint = JoystickControl.direct * speed * Time.fixedDeltaTime + transform.position;
+                transform.position = CheckGround(nextPoint);
+                if (JoystickControl.direct != Vector3.zero)
+                {
+                    skin.forward = JoystickControl.direct;
+                    ChangeAnim("run");
+                }
             }
-        }
        
+        }
     }
 }

@@ -3,53 +3,55 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TypeEventsAnim
+namespace Project.Scripts.Character.EventAnim
 {
-    Throw,
-    EndThrow
-}
-public class EventsAnimManager : MonoBehaviour
-{
-    private static readonly Dictionary<Animator, EventsAnimManager> s_EventsAnimManagers = new();
-    private  readonly Dictionary<TypeEventsAnim, List<Action>> _eventTable = new();
-    private Animator _animator;
-
-    private void Start()
+    public enum TypeEventsAnim
     {
-        _animator = GetComponent<Animator>();
-        if (_animator != null && !s_EventsAnimManagers.ContainsKey(_animator))
-        {
-            s_EventsAnimManagers.Add(_animator, this);
-        }
+        Throw,
+        EndThrow
     }
-
-    public static EventsAnimManager Get(Animator animator)
+    public class EventsAnimManager : MonoBehaviour
     {
-        if (animator != null && s_EventsAnimManagers.TryGetValue(animator, out var manager))
-        {
-            return manager;
-        }
+        private static readonly Dictionary<Animator, EventsAnimManager> EventsAnimManagers = new();
+        private  readonly Dictionary<TypeEventsAnim, List<Action>> _eventTable = new();
+        private Animator Animator => GetComponent<Animator>();
 
-        return null;
-    }
-    public void OnRegister(TypeEventsAnim eventType,  Action callback)
-    {
-        if (!_eventTable.ContainsKey(eventType))
+        private void Start()
         {
-            _eventTable[eventType] = new List<Action>();
-        }
-        _eventTable[eventType].Add(callback);
-    }
-
-    public void OnAnimEvent(TypeEventsAnim eventType)
-    {
-        if (_eventTable.TryGetValue(eventType,out var actions))
-        {
-            foreach (var action in actions)
+            if (Animator != null && !EventsAnimManagers.ContainsKey(Animator))
             {
-                action?.Invoke();
+                EventsAnimManagers.Add(Animator, this);
             }
+        }
+
+        public static EventsAnimManager Get(Animator animator)
+        {
+            if (animator != null && EventsAnimManagers.TryGetValue(animator, out var manager))
+            {
+                return manager;
+            }
+
+            return null;
+        }
+        public void OnRegister(TypeEventsAnim eventType,  Action callback)
+        {
+            if (!_eventTable.ContainsKey(eventType))
+            {
+                _eventTable[eventType] = new List<Action>();
+            }
+            _eventTable[eventType].Add(callback);
+        }
+
+        public void OnAnimEvent(TypeEventsAnim eventType)
+        {
+            if (_eventTable.TryGetValue(eventType,out var actions))
+            {
+                foreach (var action in actions)
+                {
+                    action?.Invoke();
+                }
             
+            }
         }
     }
 }

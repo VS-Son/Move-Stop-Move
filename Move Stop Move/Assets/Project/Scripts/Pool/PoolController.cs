@@ -1,26 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PoolController : MonoBehaviour
+namespace Project.Scripts.Pool
 {
-    [Header("Pool")]
-    public PoolAmount[] Pool;
-
-    [Header("Particle")]
-    public ParticleAmount[] Particle;
-
-
-    public void Awake()
+    public class PoolController : MonoBehaviour
     {
-        for (int i = 0; i < Particle.Length; i++)
-        {
-            ParticlePool.Preload(Particle[i].prefab, Particle[i].amount, Particle[i].root);
-        }
+        [Header("Pool")]
+        public PoolAmount[] Pool;
 
-        foreach (var pool in Pool)
+        [Header("Particle")]
+        public ParticleAmount[] Particle;
+
+
+        public void Awake()
         {
-            SimplePool.Preload(pool.prefab, pool.amount, pool.root, pool.collect, pool.clamp);
+            for (int i = 0; i < Particle.Length; i++)
+            {
+                ParticlePool.Preload(Particle[i].prefab, Particle[i].amount, Particle[i].root);
+            }
+
+            foreach (var pool in Pool)
+            {
+                SimplePool.Preload(pool.prefab, pool.amount, pool.root, pool.collect, pool.clamp);
+            }
         }
     }
 }
