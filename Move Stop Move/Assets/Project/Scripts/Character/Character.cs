@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Project.Scripts.Anim.EventAnim;
 using Project.Scripts.Character.Attack;
-using Project.Scripts.Character.EventAnim;
 using Project.Scripts.Pool;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Project.Scripts.Character
 {
@@ -18,15 +20,26 @@ namespace Project.Scripts.Character
         [SerializeField] protected ThrowItem throwItemPrefab;
         [SerializeField] protected Animator animator;
 
-        private string _currentAnim;
-        private Coroutine _hideCoroutine;
         private readonly Queue<ThrowItem> listThrowItems = new();
-        private EventsAnimManager eventsAnimManager => EventsAnimManager.Get(animator);
+        public NavMeshAgent _agent;
+        private string _currentAnim;
+        private EventsAnimManager _eventsAnimManager;
+        private Coroutine _hideCoroutine;
+
+        public NavMeshAgent Agent
+        {
+            get => _agent;
+            set
+            {
+                _agent = value;
+                if (_agent == null) OnInit();
+            }
+        }
 
         private Collider[] hits => Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"))
             .Where(col => col.transform != transform).ToArray();
 
-        protected Transform target => GetNearestEnemy();
+        public Transform target => GetNearestEnemy();
 
         public float rangeSize
         {
@@ -38,8 +51,15 @@ namespace Project.Scripts.Character
             }
         }
 
+        private void Awake()
+        {
+            _agent = GetComponent<NavMeshAgent>();
+
+        }
+
         private void Start()
         {
+            _eventsAnimManager = EventsAnimManager.Get(animator);
             OnInit();
             UpdateThrowRange();
         }
@@ -58,14 +78,15 @@ namespace Project.Scripts.Character
 
 #endif
 
-        private void OnInit()
+        protected virtual void OnInit()
         {
-            if (eventsAnimManager != null)
+            if (_eventsAnimManager != null)
             {
-                eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
-                eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
+                _eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
+                _eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
             }
         }
+
 
         private void EndThrow()
         {
@@ -76,7 +97,7 @@ namespace Project.Scripts.Character
             throwRange.localScale = new Vector3(throwRangeSize * 2, throwRangeSize * 2, 1f);
         }
 
-        protected bool HasEnemyInRange()
+        public bool HasEnemyInRange()
         {
             return hits.Length > 0;
         }
@@ -90,7 +111,7 @@ namespace Project.Scripts.Character
             return transform.position;
         }
 
-        protected void ChangeAnim(string animName)
+        public void ChangeAnim(string animName)
         {
             if (_currentAnim != animName)
             {

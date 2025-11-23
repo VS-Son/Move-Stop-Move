@@ -385,7 +385,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6411683389337410056, guid: 2d36845a09a202d43886d01a0e96f7e5, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6411683389337410056, guid: 2d36845a09a202d43886d01a0e96f7e5, type: 3}
       propertyPath: m_TagString
@@ -930,6 +930,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bot
       objectReference: {fileID: 0}
+    - target: {fileID: 6411683389337410068, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
+      propertyPath: m_AutoTraverseOffMeshLink
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6411683389337410070, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -973,6 +977,14 @@ PrefabInstance:
     - target: {fileID: 6411683389337410070, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6411683389337410071, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
+      propertyPath: m_UseGravity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6411683389337410071, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
+      propertyPath: m_IsKinematic
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
