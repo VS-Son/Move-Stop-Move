@@ -1,3 +1,4 @@
+using Cinemachine;
 using Project.Scripts.Anim;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ namespace Project.Scripts.Character
 {
     public class Player : Character
     {
+        private CinemachineVirtualCamera _cameraFollow;
         private bool _isMoving;
 
         private void Update()

@@ -1,5 +1,5 @@
 using System.Linq;
-using Project.Scripts.Character.State;
+using Project.Scripts.Character.StateMachine;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +7,6 @@ namespace Project.Scripts.Character
 {
     public class Bot : Character
     {
-        private NavMeshAgent _agent;
         private IState<Bot> _currentState;
 
         private void Update()

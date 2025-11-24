@@ -1,7 +1,7 @@
 using Project.Scripts.Anim;
 using UnityEngine;
 
-namespace Project.Scripts.Character.State
+namespace Project.Scripts.Character.StateMachine
 {
     public class PatrolState : IState<Bot>
     {

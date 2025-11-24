@@ -1,76 +1,116 @@
+using System;
 using System.Collections.Generic;
 using Project.Scripts.Character;
 using Project.Scripts.Pool;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
+
+public enum SpawnCharacterType
+{
+    Bot,
+    Player
+}
+
+[Serializable]
+public class SpawnCharacterData
+{
+    public SpawnCharacterType spawnCharacterType;
+    public string character;
+}
 
 namespace Project.Scripts.Level
 {
     public class RandomNavMeshSpawner : MonoBehaviour
     {
-        public float spawnRadius = 20f;
-        public float minDistance = 100000;
-        public int maxAttempts = 40;
-        public int numberBots;
+        public SpawnCharacterData[] spawnCharacterData = new SpawnCharacterData[2];
+        public Character.Character _prefab;
+        public int spawnCount;
+        public float minDistance;
+        public float sampleRadius;
 
-        private readonly List<Transform> spawnedBots = new();
+        private readonly Dictionary<SpawnCharacterType, string> _charactersType = new();
 
-        private Bot Prefab => Resources.Load<Bot>("Prefabs/Character/Bot");
+        private readonly Vector3 center = Vector3.zero;
+        private readonly List<Character.Character> listBot = new();
+        private readonly List<Vector3> spawnedPositions = new();
+
 
         private void Start()
         {
-            for (var i = 0; i < numberBots; i++)
-                Spawn();
+            foreach (var data in spawnCharacterData)
+                if (!_charactersType.ContainsKey(data.spawnCharacterType))
+                    _charactersType.Add(data.spawnCharacterType, data.character);
+            SpawnPrefab();
         }
 
-        private void Spawn()
+        private void SpawnPrefab()
         {
-            for (var attempts = 0; attempts < maxAttempts; attempts++)
+            GenerateCharacter(SpawnCharacterType.Player);
+            var botNeeded = spawnCount - 1;
+
+            for (var i = 0; i < botNeeded; i++)
+                GenerateCharacter(SpawnCharacterType.Bot);
+        }
+
+        private void GenerateCharacter(SpawnCharacterType type)
+        {
+            if (!_charactersType.ContainsKey(type)) return;
+            var prefab = Resources.Load<Character.Character>("Prefabs/Character/" + _charactersType[type]);
+            if (TryGetValidPosition(out var pos))
             {
-                var randomPos = GetRandomPointOnNavMesh(transform.position, spawnRadius);
+                var bot = SimplePool.Spawn<Bot>(prefab, pos, Quaternion.identity);
+                spawnedPositions.Add(pos);
+                listBot.Add(bot);
+            }
+        }
 
-                if (randomPos != Vector3.zero && IsFarEnough(randomPos))
+        private bool TryGetValidPosition(out Vector3 result)
+        {
+            var maxTry = 50;
+
+            while (maxTry > 0)
+            {
+                maxTry--;
+
+
+                var randomPoint = center + new Vector3(
+                    Random.Range(-sampleRadius, sampleRadius),
+                    0,
+                    Random.Range(-sampleRadius, sampleRadius)
+                );
+
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(randomPoint, out hit, 5f, NavMesh.AllAreas))
                 {
-                    var bot = SimplePool.Spawn<Bot>(Prefab, randomPos, Quaternion.identity);
+                    var candidate = hit.position;
 
-                    if (bot.gameObject.activeInHierarchy)
-                        spawnedBots.Add(bot.transform);
+                    var valid = true;
+                    foreach (var pos in spawnedPositions)
+                        if (Vector3.Distance(candidate, pos) < minDistance)
+                        {
+                            valid = false;
+                            break;
+                        }
 
-                    return;
+                    if (valid)
+                    {
+                        result = candidate;
+                        return true;
+                    }
                 }
             }
 
-            Debug.LogWarning("Cannot find valid spawn point with required spacing.");
+            result = Vector3.zero;
+            return false;
         }
 
-        private bool IsFarEnough(Vector3 pos)
+        public void OnResetRandom()
         {
-            spawnedBots.RemoveAll(b => b == null || !b.gameObject.activeInHierarchy);
-
-            foreach (var bot in spawnedBots)
-            {
-                var a = new Vector3(bot.position.x, 0, bot.position.z);
-                var b = new Vector3(pos.x, 0, pos.z);
-
-                if (Vector3.Distance(a, b) < minDistance)
-                    return false;
-            }
-
-            return true;
-        }
-
-        private Vector3 GetRandomPointOnNavMesh(Vector3 center, float radius)
-        {
-            for (var i = 0; i < maxAttempts; i++)
-            {
-                var randomPoint = center + Random.insideUnitSphere * radius;
-                NavMeshHit hit;
-
-                if (NavMesh.SamplePosition(randomPoint, out hit, 5f, NavMesh.AllAreas))
-                    return hit.position;
-            }
-
-            return Vector3.zero;
+            foreach (var bot in listBot) SimplePool.Despawn(bot);
+            listBot.Clear();
+            spawnedPositions.Clear();
+            SpawnPrefab();
         }
     }
 }
