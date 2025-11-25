@@ -877,6 +877,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9194935953247065560}
   - component: {fileID: 5846244774608897707}
+  - component: {fileID: 1185114769911277697}
   m_Layer: 5
   m_Name: Home Screen
   m_TagString: Untagged
@@ -913,6 +914,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8349505462878799621}
   m_CullTransparentMesh: 1
+--- !u!114 &1185114769911277697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8349505462878799621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f91dfc1d1e10f429af12bb9bf158ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsDestroyOnClose: 0
 --- !u!1 &8967497037546587592
 GameObject:
   m_ObjectHideFlags: 0

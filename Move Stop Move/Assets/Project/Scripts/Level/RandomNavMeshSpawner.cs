@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Project.Scripts.Character;
 using Project.Scripts.Pool;
+using Project.Scripts.UI.Manager;
+using Project.Scripts.UI.Screen;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -35,9 +37,13 @@ namespace Project.Scripts.Level
         private readonly List<Character.Character> listBot = new();
         private readonly List<Vector3> spawnedPositions = new();
 
-
+        private void Awake()
+        {
+            
+        }
         private void Start()
         {
+            UIManager.Instance.OpenUI<MainMenu>();
             foreach (var data in spawnCharacterData)
                 if (!_charactersType.ContainsKey(data.spawnCharacterType))
                     _charactersType.Add(data.spawnCharacterType, data.character);
