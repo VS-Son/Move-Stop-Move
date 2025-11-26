@@ -1,12 +1,14 @@
-using System;
+using Project.Scripts.Level;
 using Project.Scripts.UI.Manager;
-using UnityEngine;
 
 namespace Project.Scripts.UI.Screen
 {
     public class MainMenu : UICanvas
     {
-       
-
+        public void OnStartGame()
+        {
+            StateUI.Instance.ChangeState(StateType.Gameplay);
+            RandomNavMeshSpawner.Instance.OnStartGame();
+        }
     }
 }

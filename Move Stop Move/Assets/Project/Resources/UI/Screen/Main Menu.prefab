@@ -320,7 +320,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 293458795348824626}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1185114769911277697}
+        m_TargetAssemblyTypeName: Project.Scripts.UI.Screen.MainMenu, Assembly-CSharp
+        m_MethodName: OnStartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4688666401665682898
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,7 +891,7 @@ GameObject:
   - component: {fileID: 5846244774608897707}
   - component: {fileID: 1185114769911277697}
   m_Layer: 5
-  m_Name: Home Screen
+  m_Name: Main Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

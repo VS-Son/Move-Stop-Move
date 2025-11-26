@@ -1,7 +1,7 @@
 using System.Linq;
 using Project.Scripts.Character.StateMachine;
+using Project.Scripts.UI.Manager;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Project.Scripts.Character
 {
@@ -11,14 +11,10 @@ namespace Project.Scripts.Character
 
         private void Update()
         {
+            if (StateUI.Instance.IsState(StateType.MainMenu)) return;
             if (_currentState != null) _currentState.OnExecute(this);
         }
 
-        protected override void OnInit()
-        {
-            _agent = GetComponent<NavMeshAgent>();
-            ChangeState(new PatrolState());
-        }
 
         public void ChangeState(IState<Bot> state)
         {

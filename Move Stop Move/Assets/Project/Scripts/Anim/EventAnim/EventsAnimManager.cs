@@ -12,18 +12,20 @@ namespace Project.Scripts.Anim.EventAnim
 
     public class EventsAnimManager : MonoBehaviour
     {
-        private static readonly Dictionary<Animator, EventsAnimManager> EventsAnimManagers = new();
+        private static readonly Dictionary<Animator, EventsAnimManager> SEventsAnimManagers = new();
         private readonly Dictionary<TypeEventsAnim, List<Action>> _eventTable = new();
-        private Animator Animator => GetComponent<Animator>();
+        private Animator _animator;
 
         private void Start()
         {
-            if (Animator != null && !EventsAnimManagers.ContainsKey(Animator)) EventsAnimManagers.Add(Animator, this);
+            _animator = GetComponent<Animator>();
+            if (_animator != null && !SEventsAnimManagers.ContainsKey(_animator))
+                SEventsAnimManagers.Add(_animator, this);
         }
 
         public static EventsAnimManager Get(Animator animator)
         {
-            if (animator != null && EventsAnimManagers.TryGetValue(animator, out var manager)) return manager;
+            if (animator != null && SEventsAnimManagers.TryGetValue(animator, out var manager)) return manager;
 
             return null;
         }

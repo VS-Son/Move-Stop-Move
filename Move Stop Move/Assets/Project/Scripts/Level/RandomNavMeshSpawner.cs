@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Project.Scripts.Character;
+using Project.Scripts.Character.StateMachine;
 using Project.Scripts.Pool;
 using Project.Scripts.UI.Manager;
 using Project.Scripts.UI.Screen;
@@ -23,7 +24,7 @@ public class SpawnCharacterData
 
 namespace Project.Scripts.Level
 {
-    public class RandomNavMeshSpawner : MonoBehaviour
+    public class RandomNavMeshSpawner : Singleton<RandomNavMeshSpawner>
     {
         public SpawnCharacterData[] spawnCharacterData = new SpawnCharacterData[2];
         public Character.Character _prefab;
@@ -39,8 +40,8 @@ namespace Project.Scripts.Level
 
         private void Awake()
         {
-            
         }
+
         private void Start()
         {
             UIManager.Instance.OpenUI<MainMenu>();
@@ -117,6 +118,13 @@ namespace Project.Scripts.Level
             listBot.Clear();
             spawnedPositions.Clear();
             SpawnPrefab();
+        }
+
+        public void OnStartGame()
+        {
+            foreach (var character in listBot)
+                if (character is Bot bot)
+                    bot.ChangeState(new PatrolState());
         }
     }
 }

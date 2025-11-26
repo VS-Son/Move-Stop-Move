@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,24 +19,15 @@ namespace Project.Scripts.Character
         [SerializeField] protected ThrowItem throwItemPrefab;
         [SerializeField] protected Animator animator;
 
-        private readonly Queue<ThrowItem> listThrowItems = new();
-        public NavMeshAgent _agent;
+        private readonly Queue<ThrowItem> _listThrowItems = new();
         private string _currentAnim;
-        private EventsAnimManager _eventsAnimManager;
         private Coroutine _hideCoroutine;
-
-        public NavMeshAgent Agent
-        {
-            get => _agent;
-            set
-            {
-                _agent = value;
-                if (_agent == null) OnInit();
-            }
-        }
+        private EventsAnimManager EventsAnimManager => EventsAnimManager.Get(animator);
 
         private Collider[] hits => Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"))
             .Where(col => col.transform != transform).ToArray();
+
+        public NavMeshAgent Agent { get; private set; }
 
         public Transform target => GetNearestEnemy();
 
@@ -53,13 +43,12 @@ namespace Project.Scripts.Character
 
         private void Awake()
         {
-            _agent = GetComponent<NavMeshAgent>();
-
+            Agent = GetComponent<NavMeshAgent>();
         }
+
 
         private void Start()
         {
-            _eventsAnimManager = EventsAnimManager.Get(animator);
             OnInit();
             UpdateThrowRange();
         }
@@ -78,12 +67,12 @@ namespace Project.Scripts.Character
 
 #endif
 
-        protected virtual void OnInit()
+        protected void OnInit()
         {
-            if (_eventsAnimManager != null)
+            if (EventsAnimManager != null)
             {
-                _eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
-                _eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
+                EventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
+                EventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
             }
         }
 
@@ -130,11 +119,12 @@ namespace Project.Scripts.Character
 
         private void OnThrow()
         {
-            var position = throwPos.position;
+            Debug.Log("Attack");
             if (target == null) return;
-
-            var item = SimplePool.Spawn<ThrowItem>(throwItemPrefab, position, Quaternion.identity);
-            listThrowItems.Enqueue(item);
+            if (throwItemPrefab != null) Debug.Log("throwItemPrefab");
+            var item = SimplePool.Spawn<ThrowItem>(throwItemPrefab, throwPos.position, Quaternion.identity);
+            //Instantiate(throwItemPrefab, throwPos.position, Quaternion.identity);
+            _listThrowItems.Enqueue(item);
 
             var rb = item.GetComponent<Rigidbody>();
             if (rb != null) rb.velocity = skin.forward * 10;
@@ -144,9 +134,9 @@ namespace Project.Scripts.Character
 
         private IEnumerator HideWeaponThrow()
         {
-            while (listThrowItems.Count > 0)
+            while (_listThrowItems.Count > 0)
             {
-                foreach (var t in listThrowItems.ToArray())
+                foreach (var t in _listThrowItems.ToArray())
                     if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize + 0.5f)
                         SimplePool.Despawn(t);
 
