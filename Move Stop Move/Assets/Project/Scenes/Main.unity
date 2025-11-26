@@ -854,7 +854,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1685549136}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1482481403 stripped
 RectTransform:
@@ -891,16 +891,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Pool:
-  - root: {fileID: 1377612807}
-    prefab: {fileID: 4436949512022866384, guid: ef7c5338b0853964c9b7ab0aa363c47e, type: 3}
-    amount: 10
-    collect: 1
-    clamp: 0
   - root: {fileID: 1783166314}
     prefab: {fileID: 8917077487118212840, guid: 22c31d1d7890d774a9e514f593afa581, type: 3}
-    amount: 10
+    amount: 2
     collect: 1
     clamp: 0
+  - root: {fileID: 1377612807}
+    prefab: {fileID: 4436949512022866384, guid: ef7c5338b0853964c9b7ab0aa363c47e, type: 3}
+    amount: 5
+    collect: 1
+    clamp: 1
   Particle: []
 --- !u!4 &1685549136
 Transform:
@@ -914,8 +914,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1377612807}
   - {fileID: 1783166314}
+  - {fileID: 1377612807}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1010,7 +1010,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1685549136}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1931537797
 PrefabInstance:
@@ -1122,7 +1122,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: spawnCount
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: spawnCharacterData.Array.size

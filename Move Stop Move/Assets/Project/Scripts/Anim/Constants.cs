@@ -8,5 +8,6 @@ namespace Project.Scripts.Anim
         public const string AnimIdle = "idle";
         public const string AnimDance = "dance";
         public const string AnimAttack = "attack";
+        public const string AnimDead = "dead";
     }
 }

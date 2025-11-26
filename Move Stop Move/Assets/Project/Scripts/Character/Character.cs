@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Project.Scripts.Anim;
 using Project.Scripts.Anim.EventAnim;
 using Project.Scripts.Character.Attack;
 using Project.Scripts.Pool;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace Project.Scripts.Character
 {
@@ -18,11 +20,13 @@ namespace Project.Scripts.Character
         [SerializeField] protected Transform throwPos;
         [SerializeField] protected ThrowItem throwItemPrefab;
         [SerializeField] protected Animator animator;
+        [SerializeField] protected EventsAnimManager eventsAnimManager;
 
         private readonly Queue<ThrowItem> _listThrowItems = new();
         private string _currentAnim;
         private Coroutine _hideCoroutine;
-        private EventsAnimManager EventsAnimManager => EventsAnimManager.Get(animator);
+        private float _hp;
+        private bool IsDeath => 0 < _hp;
 
         private Collider[] hits => Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"))
             .Where(col => col.transform != transform).ToArray();
@@ -67,18 +71,20 @@ namespace Project.Scripts.Character
 
 #endif
 
-        protected void OnInit()
+        private void OnInit()
         {
-            if (EventsAnimManager != null)
+            if (eventsAnimManager != null)
             {
-                EventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
-                EventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
+                eventsAnimManager.OnRegister(TypeEventsAnim.Throw, OnThrow);
+                //eventsAnimManager.OnRegister(TypeEventsAnim.EndThrow, EndThrow);
+                eventsAnimManager.OnRegister(TypeEventsAnim.EndDead, EndDead);
             }
         }
 
 
-        private void EndThrow()
+        private void EndDead()
         {
+            SimplePool.Despawn(this);
         }
 
         private void UpdateThrowRange()
@@ -129,7 +135,7 @@ namespace Project.Scripts.Character
             var rb = item.GetComponent<Rigidbody>();
             if (rb != null) rb.velocity = skin.forward * 10;
 
-            if (_hideCoroutine == null) _hideCoroutine = StartCoroutine(HideWeaponThrow());
+           // if (_hideCoroutine == null) _hideCoroutine = StartCoroutine(HideWeaponThrow());
         }
 
         private IEnumerator HideWeaponThrow()
@@ -145,5 +151,10 @@ namespace Project.Scripts.Character
 
             _hideCoroutine = null;
         }
+        public void OnHit()
+        {
+            SimplePool.Despawn(this);
+        }
     }
+  
 }

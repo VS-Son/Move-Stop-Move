@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Project.Scripts.Anim.EventAnim;
 using Project.Scripts.Character;
 using Project.Scripts.Character.StateMachine;
 using Project.Scripts.Pool;
@@ -123,8 +124,11 @@ namespace Project.Scripts.Level
         public void OnStartGame()
         {
             foreach (var character in listBot)
+            {
                 if (character is Bot bot)
                     bot.ChangeState(new PatrolState());
+            }
+
         }
     }
 }

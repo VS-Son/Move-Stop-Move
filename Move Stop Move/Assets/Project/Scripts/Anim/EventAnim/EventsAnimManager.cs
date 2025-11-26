@@ -7,7 +7,8 @@ namespace Project.Scripts.Anim.EventAnim
     public enum TypeEventsAnim
     {
         Throw,
-        EndThrow
+        EndThrow,
+        EndDead
     }
 
     public class EventsAnimManager : MonoBehaviour
