@@ -8,7 +8,6 @@ namespace Project.Scripts.Character
     public class Bot : Character
     {
         private IState<Bot> _currentState;
-
         private void Update()
         {
             if (StateUI.Instance.IsState(StateType.MainMenu)) return;

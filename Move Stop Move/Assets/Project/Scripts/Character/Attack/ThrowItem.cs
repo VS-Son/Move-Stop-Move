@@ -1,5 +1,8 @@
+using System.Collections;
 using Project.Scripts.Pool;
 using UnityEngine;
+using System.Collections.Generic;
+using Project.Scripts.Level;
 
 namespace Project.Scripts.Character.Attack
 {
@@ -8,7 +11,14 @@ namespace Project.Scripts.Character.Attack
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Enemy")) SimplePool.Despawn(this);
-            other.GetComponent<Character>().OnHit();
+           
+
+            var character =  other.GetComponent<Character>();
+           if (character != null)
+           {
+               character.OnHit();
+           }
         }
+       
     }
 }

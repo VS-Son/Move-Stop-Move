@@ -32,7 +32,7 @@ namespace Project.Scripts.UI.Manager
 
         public void CloseUI<T>() where T : UICanvas
         {
-            if (IsOpened<T>()) GetUI<T>().Close();
+            if (IsOpened<T>()) GetUI<T>().CloseDirectly();
         }
 
         public bool IsOpened<T>() where T : UICanvas

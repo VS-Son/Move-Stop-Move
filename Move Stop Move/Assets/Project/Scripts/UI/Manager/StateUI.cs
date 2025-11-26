@@ -20,8 +20,15 @@ namespace Project.Scripts.UI.Manager
 
         public void ChangeState(StateType gameState)
         {
+            var uiManager = UIManager.Instance;
             _gameState = gameState;
-            if (_gameState == StateType.Gameplay) UIManager.Instance.CloseUI<MainMenu>();
+            switch (_gameState)
+            {
+                case StateType.Gameplay:
+                    uiManager.CloseUI<MainMenu>();
+                    uiManager.OpenUI<GamePlay>();
+                    break;
+            }
         }
 
         public bool IsState(StateType gameState)

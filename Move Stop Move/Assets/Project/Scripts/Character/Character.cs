@@ -4,7 +4,10 @@ using System.Linq;
 using Project.Scripts.Anim;
 using Project.Scripts.Anim.EventAnim;
 using Project.Scripts.Character.Attack;
+using Project.Scripts.Level;
 using Project.Scripts.Pool;
+using Project.Scripts.UI.Manager;
+using Project.Scripts.UI.Screen;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
@@ -153,8 +156,11 @@ namespace Project.Scripts.Character
         }
         public void OnHit()
         {
-            SimplePool.Despawn(this);
+             SimplePool.Despawn(this);
+             UIManager.Instance.GetUI<GamePlay>().SetNumberAlive();
         }
+
+        
     }
   
 }

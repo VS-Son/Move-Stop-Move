@@ -27,17 +27,28 @@ namespace Project.Scripts.Level
 {
     public class RandomNavMeshSpawner : Singleton<RandomNavMeshSpawner>
     {
-        public SpawnCharacterData[] spawnCharacterData = new SpawnCharacterData[2];
-        public Character.Character _prefab;
-        public int spawnCount;
-        public float minDistance;
-        public float sampleRadius;
+        [SerializeField] private List< SpawnCharacterData> spawnCharacterData = new List<SpawnCharacterData>();
+        [SerializeField] private int spawnCount;
+        [SerializeField] private float minDistance;
+        [SerializeField] private float sampleRadius;
+        [SerializeField] private int totalAlive = 50;
 
         private readonly Dictionary<SpawnCharacterType, string> _charactersType = new();
 
         private readonly Vector3 center = Vector3.zero;
         private readonly List<Character.Character> listBot = new();
         private readonly List<Vector3> spawnedPositions = new();
+
+        public int TotalAlive
+        {
+            get => totalAlive;
+            set
+            {
+                totalAlive = value;
+            }
+        }
+
+      //  public int AliveCount => spawnCount;
 
         private void Awake()
         {
@@ -58,19 +69,26 @@ namespace Project.Scripts.Level
             var botNeeded = spawnCount - 1;
 
             for (var i = 0; i < botNeeded; i++)
+            {
                 GenerateCharacter(SpawnCharacterType.Bot);
+            }
+                
         }
 
-        private void GenerateCharacter(SpawnCharacterType type)
+        public void GenerateCharacter(SpawnCharacterType type)
         {
-            if (!_charactersType.ContainsKey(type)) return;
-            var prefab = Resources.Load<Character.Character>("Prefabs/Character/" + _charactersType[type]);
-            if (TryGetValidPosition(out var pos))
+            if (TotalAlive >= spawnCount)
             {
-                var bot = SimplePool.Spawn<Bot>(prefab, pos, Quaternion.identity);
-                spawnedPositions.Add(pos);
-                listBot.Add(bot);
+                if (!_charactersType.ContainsKey(type)) return;
+                var prefab = Resources.Load<Character.Character>("Prefabs/Character/" + _charactersType[type]);
+                if (TryGetValidPosition(out var pos))
+                {
+                    var bot = SimplePool.Spawn<Bot>(prefab, pos, Quaternion.identity);
+                    spawnedPositions.Add(pos);
+                    listBot.Add(bot);
+                }
             }
+
         }
 
         private bool TryGetValidPosition(out Vector3 result)
