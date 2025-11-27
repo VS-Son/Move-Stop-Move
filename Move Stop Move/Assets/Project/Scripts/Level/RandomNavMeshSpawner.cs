@@ -31,24 +31,20 @@ namespace Project.Scripts.Level
         [SerializeField] private int spawnCount;
         [SerializeField] private float minDistance;
         [SerializeField] private float sampleRadius;
-        [SerializeField] private int totalAlive = 50;
+        [SerializeField] private int totalAlive = 10;
 
         private readonly Dictionary<SpawnCharacterType, string> _charactersType = new();
 
-        private readonly Vector3 center = Vector3.zero;
-        private readonly List<Character.Character> listBot = new();
-        private readonly List<Vector3> spawnedPositions = new();
+        private readonly Vector3 _center = Vector3.zero;
+        private readonly List<Character.Character> _listBot = new();
+        public List<Vector3> SpawnedPositions { get; } = new();
 
         public int TotalAlive
         {
             get => totalAlive;
-            set
-            {
-                totalAlive = value;
-            }
+            set => totalAlive = value;
         }
 
-      //  public int AliveCount => spawnCount;
 
         private void Awake()
         {
@@ -77,17 +73,16 @@ namespace Project.Scripts.Level
 
         public void GenerateCharacter(SpawnCharacterType type)
         {
-            if (TotalAlive >= spawnCount)
+            if (TotalAlive < spawnCount) return;
+            if (!_charactersType.TryGetValue(type, out var value)) return;
+            var prefab = Resources.Load<Character.Character>("Prefabs/Character/" + value);
+            if (TryGetValidPosition(out var pos))
             {
-                if (!_charactersType.ContainsKey(type)) return;
-                var prefab = Resources.Load<Character.Character>("Prefabs/Character/" + _charactersType[type]);
-                if (TryGetValidPosition(out var pos))
-                {
-                    var bot = SimplePool.Spawn<Bot>(prefab, pos, Quaternion.identity);
-                    spawnedPositions.Add(pos);
-                    listBot.Add(bot);
-                }
+                var bot = SimplePool.Spawn<Bot>(prefab, pos, Quaternion.identity);
+                SpawnedPositions.Add(pos);
+                _listBot.Add(bot);
             }
+
 
         }
 
@@ -100,7 +95,7 @@ namespace Project.Scripts.Level
                 maxTry--;
 
 
-                var randomPoint = center + new Vector3(
+                var randomPoint = _center + new Vector3(
                     Random.Range(-sampleRadius, sampleRadius),
                     0,
                     Random.Range(-sampleRadius, sampleRadius)
@@ -112,7 +107,7 @@ namespace Project.Scripts.Level
                     var candidate = hit.position;
 
                     var valid = true;
-                    foreach (var pos in spawnedPositions)
+                    foreach (var pos in SpawnedPositions)
                         if (Vector3.Distance(candidate, pos) < minDistance)
                         {
                             valid = false;
@@ -133,15 +128,15 @@ namespace Project.Scripts.Level
 
         public void OnResetRandom()
         {
-            foreach (var bot in listBot) SimplePool.Despawn(bot);
-            listBot.Clear();
-            spawnedPositions.Clear();
+            foreach (var bot in _listBot) SimplePool.Despawn(bot);
+            _listBot.Clear();
+            SpawnedPositions.Clear();
             SpawnPrefab();
         }
 
         public void OnStartGame()
         {
-            foreach (var character in listBot)
+            foreach (var character in _listBot)
             {
                 if (character is Bot bot)
                     bot.ChangeState(new PatrolState());

@@ -27,11 +27,8 @@ namespace Project.Scripts.Character.StateMachine
 
             if (_currentTarget != null)
             {
-                // set đích NavMeshAgent về vị trí target
                 if (t.Agent.isActiveAndEnabled)
                     t.Agent.SetDestination(_currentTarget.position);
-
-                // nếu target vào range → chuyển sang AttackState
                 var distance = Vector3.Distance(t.transform.position, _currentTarget.position);
                 if (distance <= t.rangeSize) t.ChangeState(new StateAttack(_currentTarget));
             }

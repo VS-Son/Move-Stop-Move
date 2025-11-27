@@ -28,9 +28,6 @@ namespace Project.Scripts.Character
         private readonly Queue<ThrowItem> _listThrowItems = new();
         private string _currentAnim;
         private Coroutine _hideCoroutine;
-        private float _hp;
-        private bool IsDeath => 0 < _hp;
-
         private Collider[] hits => Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"))
             .Where(col => col.transform != transform).ToArray();
 
@@ -74,7 +71,7 @@ namespace Project.Scripts.Character
 
 #endif
 
-        private void OnInit()
+        protected virtual void OnInit()
         {
             if (eventsAnimManager != null)
             {
@@ -146,7 +143,7 @@ namespace Project.Scripts.Character
             while (_listThrowItems.Count > 0)
             {
                 foreach (var t in _listThrowItems.ToArray())
-                    if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize + 0.5f)
+                    if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize + 1f)
                         SimplePool.Despawn(t);
 
                 yield return null;
@@ -154,10 +151,15 @@ namespace Project.Scripts.Character
 
             _hideCoroutine = null;
         }
-        public void OnHit()
+        public virtual void OnHit()
         {
              SimplePool.Despawn(this);
+            
              UIManager.Instance.GetUI<GamePlay>().SetNumberAlive();
+             for (int i = 0; i <   RandomNavMeshSpawner.Instance.SpawnedPositions.Count; i++)
+             {
+                 RandomNavMeshSpawner.Instance.SpawnedPositions.Remove(RandomNavMeshSpawner.Instance.SpawnedPositions[i]);
+             }
         }
 
         

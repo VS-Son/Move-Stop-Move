@@ -1,4 +1,5 @@
 using System.Collections;
+using Project.Scripts.Character;
 using Project.Scripts.Level;
 using Project.Scripts.UI.Manager;
 using UnityEngine;
@@ -10,18 +11,21 @@ namespace Project.Scripts.UI.Screen
     public class GamePlay : UICanvas
     {
         public TMP_Text aliveText;
-        private int _alive;
-        public void GetNumberAlive(int count)
+        public void GetNumberAlive()
         {
-            _alive = count;
-            aliveText.text = "Alive: " + _alive;
+           
+            aliveText.text = "Alive: " + RandomNavMeshSpawner.Instance.TotalAlive;
         }
 
         public void SetNumberAlive()
         {
-            _alive--;
-            aliveText.text = "Alive: " + _alive;
+            RandomNavMeshSpawner.Instance.TotalAlive--;
+            aliveText.text = "Alive: " + RandomNavMeshSpawner.Instance.TotalAlive;
             StartCoroutine(WaitGenerateBot());
+            if ( RandomNavMeshSpawner.Instance.TotalAlive <= 1 )
+            {
+                StateUI.Instance.ChangeState(StateType.Victory);
+            }
         }
         IEnumerator WaitGenerateBot()
         {

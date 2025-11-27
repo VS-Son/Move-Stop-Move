@@ -1,6 +1,7 @@
 using System.Linq;
 using Project.Scripts.Character.StateMachine;
 using Project.Scripts.UI.Manager;
+using Project.Scripts.UI.Screen;
 using UnityEngine;
 
 namespace Project.Scripts.Character
@@ -31,6 +32,11 @@ namespace Project.Scripts.Character
 
             var nearest = allEnemies.OrderBy(b => Vector3.Distance(transform.position, b.transform.position)).First();
             return nearest.transform;
+        }
+
+        public override void OnHit()
+        {
+            base.OnHit();
         }
     }
 }

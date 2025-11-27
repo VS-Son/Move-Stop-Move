@@ -663,6 +663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5122516760530219725}
   - component: {fileID: 8769165351836401097}
+  - component: {fileID: 2696395516868984889}
   m_Layer: 5
   m_Name: 'Victory Screen '
   m_TagString: Untagged
@@ -701,6 +702,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5821539373518567373}
   m_CullTransparentMesh: 1
+--- !u!114 &2696395516868984889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5821539373518567373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36cfe5cfff2f94443bc87d349f8b1ef8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsDestroyOnClose: 0
+  IsHandlingRabbitEars: 0
+  IsWidescreenProcessing: 0
+  popups: []
 --- !u!1 &6707695536683835896
 GameObject:
   m_ObjectHideFlags: 0

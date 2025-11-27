@@ -10,14 +10,22 @@ namespace Project.Scripts.Character.Attack
     {
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Enemy")) SimplePool.Despawn(this);
-           
-
+            if (other.CompareTag("Enemy")) SimplePool.Despawn(this); 
             var character =  other.GetComponent<Character>();
            if (character != null)
            {
-               character.OnHit();
+               switch (character)
+               {
+                   case Bot bot:
+                       bot.OnHit();
+                       break;
+                   case Player player:
+                       player.OnHit();
+                       break;
+               }
            }
+
+          
         }
        
     }

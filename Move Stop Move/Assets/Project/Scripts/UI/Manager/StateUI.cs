@@ -6,7 +6,9 @@ namespace Project.Scripts.UI.Manager
     {
         MainMenu,
         Gameplay,
-        Pause
+        Pause,
+        Revive,
+        Victory,
     }
 
     public class StateUI : Singleton<StateUI>
@@ -27,6 +29,14 @@ namespace Project.Scripts.UI.Manager
                 case StateType.Gameplay:
                     uiManager.CloseUI<MainMenu>();
                     uiManager.OpenUI<GamePlay>();
+                    break;
+                case StateType.Revive:
+                    uiManager.CloseUI<GamePlay>();
+                    uiManager.OpenUI<Revive>();
+                    break;
+                case StateType.Victory:
+                    uiManager.CloseUI<GamePlay>();
+                    uiManager.OpenUI<Victory>();
                     break;
             }
         }
