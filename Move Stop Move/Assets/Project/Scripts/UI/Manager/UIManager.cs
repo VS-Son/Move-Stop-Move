@@ -5,18 +5,19 @@ using UnityEngine.Events;
 
 namespace Project.Scripts.UI.Manager
 {
+    [Serializable]
     public class UIManager : Singleton<UIManager>
     {
-        public Transform CanvasParentTF;
+        public Transform canvasParentTf;
 
         //dict for UI active
-        private readonly Dictionary<Type, UICanvas> uiCanvas = new();
+        private readonly Dictionary<Type, UICanvas> _uiCanvas = new();
 
         //dict for quick query UI prefab
-        private readonly Dictionary<Type, UICanvas> uiCanvasPrefab = new();
+        private readonly Dictionary<Type, UICanvas> _uiCanvasPrefab = new();
 
         //list from resource
-        private UICanvas[] uiResources;
+        private UICanvas[] _uiResources;
 
         #region Canvas
 
@@ -37,58 +38,57 @@ namespace Project.Scripts.UI.Manager
 
         public bool IsOpened<T>() where T : UICanvas
         {
-            return IsLoaded<T>() && uiCanvas[typeof(T)].gameObject.activeInHierarchy;
+            return IsLoaded<T>() && _uiCanvas[typeof(T)].gameObject.activeInHierarchy;
         }
 
 
         public bool IsLoaded<T>() where T : UICanvas
         {
             var type = typeof(T);
-            return uiCanvas.ContainsKey(type) && uiCanvas[type] != null;
+            return _uiCanvas.ContainsKey(type) && _uiCanvas[type] != null;
         }
 
         public T GetUI<T>() where T : UICanvas
         {
             if (!IsLoaded<T>())
             {
-                UICanvas canvas = Instantiate(GetUIPrefab<T>(), CanvasParentTF);
-                uiCanvas[typeof(T)] = canvas;
+                UICanvas canvas = Instantiate(GetUIPrefab<T>(), canvasParentTf);
+                _uiCanvas[typeof(T)] = canvas;
             }
 
-            return uiCanvas[typeof(T)] as T;
+            return _uiCanvas[typeof(T)] as T;
         }
 
 
         private T GetUIPrefab<T>() where T : UICanvas
         {
-            if (!uiCanvasPrefab.ContainsKey(typeof(T)))
+            if (!_uiCanvasPrefab.ContainsKey(typeof(T)))
             {
-                if (uiResources == null) uiResources = Resources.LoadAll<UICanvas>("UI/Screen");
-
-                for (var i = 0; i < uiResources.Length; i++)
-                    if (uiResources[i] is T)
+                _uiResources ??= Resources.LoadAll<UICanvas>("UI/Screen");
+                foreach (var uiCanvas in _uiResources)
+                    if (uiCanvas is T)
                     {
-                        uiCanvasPrefab[typeof(T)] = uiResources[i];
+                        _uiCanvasPrefab[typeof(T)] = uiCanvas;
                         break;
                     }
             }
 
-            return uiCanvasPrefab[typeof(T)] as T;
+            return _uiCanvasPrefab[typeof(T)] as T;
         }
 
         #endregion
 
         #region Back Button
 
-        private readonly Dictionary<UICanvas, UnityAction> BackActionEvents = new();
-        private readonly List<UICanvas> backCanvas = new();
+        private readonly Dictionary<UICanvas, UnityAction> _backActionEvents = new();
+        private readonly List<UICanvas> _backCanvas = new();
 
         private UICanvas BackTopUI
         {
             get
             {
                 UICanvas canvas = null;
-                if (backCanvas.Count > 0) canvas = backCanvas[backCanvas.Count - 1];
+                if (_backCanvas.Count > 0) canvas = _backCanvas[_backCanvas.Count - 1];
 
                 return canvas;
             }
@@ -97,22 +97,22 @@ namespace Project.Scripts.UI.Manager
 
         private void LateUpdate()
         {
-            if (Input.GetKey(KeyCode.Escape) && BackTopUI != null) BackActionEvents[BackTopUI]?.Invoke();
+            if (Input.GetKey(KeyCode.Escape) && BackTopUI != null) _backActionEvents[BackTopUI]?.Invoke();
         }
 
         public void PushBackAction(UICanvas canvas, UnityAction action)
         {
-            if (!BackActionEvents.ContainsKey(canvas)) BackActionEvents.Add(canvas, action);
+            if (!_backActionEvents.ContainsKey(canvas)) _backActionEvents.Add(canvas, action);
         }
 
         public void AddBackUI(UICanvas canvas)
         {
-            if (!backCanvas.Contains(canvas)) backCanvas.Add(canvas);
+            if (!_backCanvas.Contains(canvas)) _backCanvas.Add(canvas);
         }
 
         public void RemoveBackUI(UICanvas canvas)
         {
-            backCanvas.Remove(canvas);
+            _backCanvas.Remove(canvas);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Project.Scripts.UI.Manager
         /// </summary>
         public void ClearBackKey()
         {
-            backCanvas.Clear();
+            _backCanvas.Clear();
         }
 
         #endregion

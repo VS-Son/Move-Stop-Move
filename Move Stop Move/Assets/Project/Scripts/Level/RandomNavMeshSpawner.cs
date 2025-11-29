@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Project.Scripts.Anim.EventAnim;
 using Project.Scripts.Character;
 using Project.Scripts.Character.StateMachine;
 using Project.Scripts.Pool;
@@ -27,16 +26,16 @@ namespace Project.Scripts.Level
 {
     public class RandomNavMeshSpawner : Singleton<RandomNavMeshSpawner>
     {
-        [SerializeField] private List< SpawnCharacterData> spawnCharacterData = new List<SpawnCharacterData>();
+        [SerializeField] private List<SpawnCharacterData> spawnCharacterData = new();
         [SerializeField] private int spawnCount;
         [SerializeField] private float minDistance;
         [SerializeField] private float sampleRadius;
         [SerializeField] private int totalAlive = 10;
 
-        private readonly Dictionary<SpawnCharacterType, string> _charactersType = new();
-
         private readonly Vector3 _center = Vector3.zero;
-        private readonly List<Character.Character> _listBot = new();
+
+        private readonly Dictionary<SpawnCharacterType, string> _charactersType = new();
+        public readonly List<Character.Character> ListBot = new();
         public List<Vector3> SpawnedPositions { get; } = new();
 
         public int TotalAlive
@@ -64,26 +63,18 @@ namespace Project.Scripts.Level
             GenerateCharacter(SpawnCharacterType.Player);
             var botNeeded = spawnCount - 1;
 
-            for (var i = 0; i < botNeeded; i++)
-            {
-                GenerateCharacter(SpawnCharacterType.Bot);
-            }
-                
+            for (var i = 0; i < botNeeded; i++) GenerateCharacter(SpawnCharacterType.Bot);
         }
 
         public void GenerateCharacter(SpawnCharacterType type)
         {
-            if (TotalAlive < spawnCount) return;
             if (!_charactersType.TryGetValue(type, out var value)) return;
             var prefab = Resources.Load<Character.Character>("Prefabs/Character/" + value);
             if (TryGetValidPosition(out var pos))
             {
                 var bot = SimplePool.Spawn<Bot>(prefab, pos, Quaternion.identity);
-                SpawnedPositions.Add(pos);
-                _listBot.Add(bot);
+                ListBot.Add(bot);
             }
-
-
         }
 
         private bool TryGetValidPosition(out Vector3 result)
@@ -94,25 +85,29 @@ namespace Project.Scripts.Level
             {
                 maxTry--;
 
-
                 var randomPoint = _center + new Vector3(
                     Random.Range(-sampleRadius, sampleRadius),
                     0,
                     Random.Range(-sampleRadius, sampleRadius)
                 );
 
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(randomPoint, out hit, 5f, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(randomPoint, out var hit, 5f, NavMesh.AllAreas))
                 {
                     var candidate = hit.position;
 
                     var valid = true;
-                    foreach (var pos in SpawnedPositions)
-                        if (Vector3.Distance(candidate, pos) < minDistance)
+
+                    // Check ALL bot positions currently alive
+                    foreach (var bot in ListBot)
+                    {
+                        if (bot == null || !bot.gameObject.activeSelf) continue;
+
+                        if (Vector3.Distance(candidate, bot.transform.position) < minDistance)
                         {
                             valid = false;
                             break;
                         }
+                    }
 
                     if (valid)
                     {
@@ -126,22 +121,25 @@ namespace Project.Scripts.Level
             return false;
         }
 
+
         public void OnResetRandom()
         {
-            foreach (var bot in _listBot) SimplePool.Despawn(bot);
-            _listBot.Clear();
-            SpawnedPositions.Clear();
+            foreach (var bot in ListBot) SimplePool.Despawn(bot);
+            ListBot.Clear();
             SpawnPrefab();
         }
 
         public void OnStartGame()
         {
-            foreach (var character in _listBot)
-            {
+            foreach (var character in ListBot)
                 if (character is Bot bot)
                     bot.ChangeState(new PatrolState());
-            }
+        }
 
+        public void RemoveBot(Character.Character character)
+        {
+            ListBot.Remove(character);
+            Debug.Log("list bot" + ListBot.Count);
         }
     }
 }

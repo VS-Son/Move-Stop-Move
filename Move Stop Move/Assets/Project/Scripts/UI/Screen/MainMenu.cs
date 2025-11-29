@@ -9,7 +9,7 @@ namespace Project.Scripts.UI.Screen
         {
             StateUI.Instance.ChangeState(StateType.Gameplay);
             RandomNavMeshSpawner.Instance.OnStartGame();
-            UIManager.Instance.GetUI<GamePlay>().GetNumberAlive();
+            UIManager.Instance.GetUI<GamePlay>().GetNumberAlive(RandomNavMeshSpawner.Instance.TotalAlive);
         }
     }
 }

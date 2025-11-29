@@ -1,16 +1,12 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project.Scripts.Anim;
 using Project.Scripts.Anim.EventAnim;
 using Project.Scripts.Character.Attack;
 using Project.Scripts.Level;
 using Project.Scripts.Pool;
-using Project.Scripts.UI.Manager;
-using Project.Scripts.UI.Screen;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
 
 namespace Project.Scripts.Character
 {
@@ -25,17 +21,17 @@ namespace Project.Scripts.Character
         [SerializeField] protected Animator animator;
         [SerializeField] protected EventsAnimManager eventsAnimManager;
 
+        public NavMeshAgent agent;
+
         private readonly Queue<ThrowItem> _listThrowItems = new();
         private string _currentAnim;
-        private Coroutine _hideCoroutine;
-        private Collider[] hits => Physics.OverlapSphere(throwRange.position, rangeSize, LayerMask.GetMask("Enemy"))
+
+        private Collider[] Hits => Physics.OverlapSphere(throwRange.position, RangeSize, LayerMask.GetMask("Neutral"))
             .Where(col => col.transform != transform).ToArray();
 
-        public NavMeshAgent Agent { get; private set; }
+        protected Transform Target => GetNearestEnemy();
 
-        public Transform target => GetNearestEnemy();
-
-        public float rangeSize
+        protected float RangeSize
         {
             get => throwRangeSize;
             set
@@ -43,11 +39,6 @@ namespace Project.Scripts.Character
                 throwRangeSize = value;
                 UpdateThrowRange();
             }
-        }
-
-        private void Awake()
-        {
-            Agent = GetComponent<NavMeshAgent>();
         }
 
 
@@ -60,7 +51,7 @@ namespace Project.Scripts.Character
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(throwRange.position, rangeSize);
+            Gizmos.DrawWireSphere(throwRange.position, RangeSize);
         }
 
 #if UNITY_EDITOR
@@ -70,6 +61,7 @@ namespace Project.Scripts.Character
         }
 
 #endif
+        public static event Action SetNumberAlive;
 
         protected virtual void OnInit()
         {
@@ -89,12 +81,12 @@ namespace Project.Scripts.Character
 
         private void UpdateThrowRange()
         {
-            throwRange.localScale = new Vector3(throwRangeSize * 2, throwRangeSize * 2, 1f);
+            throwRange.localScale = new Vector3(RangeSize * 2, RangeSize * 2, 1f);
         }
 
         public bool HasEnemyInRange()
         {
-            return hits.Length > 0;
+            return Hits.Length > 0;
         }
 
         protected Vector3 CheckGround(Vector3 nextPoint)
@@ -116,53 +108,31 @@ namespace Project.Scripts.Character
             }
         }
 
-        private Transform GetNearestEnemy()
+        public Transform GetNearestEnemy()
         {
-            if (hits.Length == 0) return null;
-            var nearest = hits.OrderBy(e => Vector3.Distance(throwPos.position, e.transform.position)).First();
+            if (Hits.Length == 0) return null;
+            var nearest = Hits.OrderBy(e => Vector3.Distance(throwRange.position, e.transform.position)).First();
             return nearest.transform;
         }
 
         private void OnThrow()
         {
-            Debug.Log("Attack");
-            if (target == null) return;
-            if (throwItemPrefab != null) Debug.Log("throwItemPrefab");
-            var item = SimplePool.Spawn<ThrowItem>(throwItemPrefab, throwPos.position, Quaternion.identity);
-            //Instantiate(throwItemPrefab, throwPos.position, Quaternion.identity);
+            if (Target == null) return;
+            var throwPosition = throwPos.position;
+            var item = SimplePool.Spawn<ThrowItem>(throwItemPrefab, throwPosition, Quaternion.identity);
             _listThrowItems.Enqueue(item);
-
+            var dir = (Target.position - throwPosition).normalized;
             var rb = item.GetComponent<Rigidbody>();
-            if (rb != null) rb.velocity = skin.forward * 10;
-
-           // if (_hideCoroutine == null) _hideCoroutine = StartCoroutine(HideWeaponThrow());
+            if (rb != null) rb.velocity = dir * 10f;
+            rb.freezeRotation = true;
         }
 
-        private IEnumerator HideWeaponThrow()
-        {
-            while (_listThrowItems.Count > 0)
-            {
-                foreach (var t in _listThrowItems.ToArray())
-                    if (Vector3.Distance(t.transform.position, throwRange.position) > rangeSize + 1f)
-                        SimplePool.Despawn(t);
 
-                yield return null;
-            }
-
-            _hideCoroutine = null;
-        }
         public virtual void OnHit()
         {
-             SimplePool.Despawn(this);
-            
-             UIManager.Instance.GetUI<GamePlay>().SetNumberAlive();
-             for (int i = 0; i <   RandomNavMeshSpawner.Instance.SpawnedPositions.Count; i++)
-             {
-                 RandomNavMeshSpawner.Instance.SpawnedPositions.Remove(RandomNavMeshSpawner.Instance.SpawnedPositions[i]);
-             }
+            SetNumberAlive?.Invoke();
+            SimplePool.Despawn(this);
+            RandomNavMeshSpawner.Instance.RemoveBot(this);
         }
-
-        
     }
-  
 }

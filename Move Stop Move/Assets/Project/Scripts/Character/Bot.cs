@@ -1,7 +1,6 @@
 using System.Linq;
 using Project.Scripts.Character.StateMachine;
 using Project.Scripts.UI.Manager;
-using Project.Scripts.UI.Screen;
 using UnityEngine;
 
 namespace Project.Scripts.Character
@@ -9,12 +8,16 @@ namespace Project.Scripts.Character
     public class Bot : Character
     {
         private IState<Bot> _currentState;
+
         private void Update()
         {
             if (StateUI.Instance.IsState(StateType.MainMenu)) return;
             if (_currentState != null) _currentState.OnExecute(this);
         }
 
+        private void FixedUpdate()
+        {
+        }
 
         public void ChangeState(IState<Bot> state)
         {
@@ -25,18 +28,29 @@ namespace Project.Scripts.Character
             if (_currentState != null) _currentState.OnEnter(this);
         }
 
-        public Transform GetNearestEnemyGlobal()
+        public Transform GetRandomEnemyGlobal()
         {
             var allEnemies = FindObjectsOfType<Character>().Where(b => b != this).ToArray();
             if (allEnemies.Length == 0) return null;
 
-            var nearest = allEnemies.OrderBy(b => Vector3.Distance(transform.position, b.transform.position)).First();
-            return nearest.transform;
+            var randomIndex = Random.Range(0, allEnemies.Length);
+            return allEnemies[randomIndex].transform;
         }
+
 
         public override void OnHit()
         {
             base.OnHit();
+        }
+
+
+        public new bool HasEnemyInRange()
+        {
+            var allEnemies = FindObjectsOfType<Character>().Where(b => b != this).ToArray();
+            foreach (var enemy in allEnemies)
+                if (Vector3.Distance(transform.position, enemy.transform.position) <= RangeSize)
+                    return true;
+            return false;
         }
     }
 }

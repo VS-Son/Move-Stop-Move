@@ -393,12 +393,13 @@ GameObject:
   m_Component:
   - component: {fileID: 6411683389337410070}
   - component: {fileID: 6113061349904942559}
+  - component: {fileID: 1693288995502567336}
   - component: {fileID: 6411683389337410057}
   - component: {fileID: 6411683389337410071}
   - component: {fileID: 6411683389337410068}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Player
-  m_TagString: Player
+  m_TagString: Neutral
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -444,8 +445,25 @@ MonoBehaviour:
   throwItemPrefab: {fileID: 4436949512022866384, guid: ef7c5338b0853964c9b7ab0aa363c47e, type: 3}
   animator: {fileID: 7238542907135465096}
   eventsAnimManager: {fileID: 5752143600300412769}
-  cameraFollow: {fileID: 671744187}
-  tranFollow: {x: 0, y: 1, z: -5}
+  agent: {fileID: 6411683389337410068}
+--- !u!114 &1693288995502567336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6411683389337410056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7aa4bddaddc6e24792d374ce22415f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cinemaCamera: {fileID: 671744187}
+  zoomSpeed: 5
+  menuOffset: {x: 0, y: 1, z: -5}
+  gameplayOffset: {x: 0, y: 7, z: -5}
+  menuRotation: {x: 12, y: 0, z: 0}
+  gameplayRotation: {x: 50, y: 0, z: 0}
 --- !u!136 &6411683389337410057
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -522,7 +540,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7147836348862888864}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.35, z: 0}
+  m_LocalPosition: {x: 0, y: 0.35, z: 0.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

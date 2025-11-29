@@ -8,7 +8,7 @@ namespace Project.Scripts.UI.Manager
         Gameplay,
         Pause,
         Revive,
-        Victory,
+        Victory
     }
 
     public class StateUI : Singleton<StateUI>

@@ -24,13 +24,6 @@ namespace Project.Scripts.Anim.EventAnim
                 SEventsAnimManagers.Add(_animator, this);
         }
 
-        public static EventsAnimManager Get(Animator animator)
-        {
-            if (animator != null && SEventsAnimManagers.TryGetValue(animator, out var manager)) return manager;
-
-            return null;
-        }
-
         public void OnRegister(TypeEventsAnim eventType, Action callback)
         {
             if (!_eventTable.ContainsKey(eventType)) _eventTable[eventType] = new List<Action>();

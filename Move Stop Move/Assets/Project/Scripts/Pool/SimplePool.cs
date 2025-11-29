@@ -160,12 +160,12 @@ namespace Project.Scripts.Pool
             }
         }
 
-        static public bool IsHasPool(int instanceID)
+        public static bool IsHasPool(int instanceID)
         {
             return poolInstanceID.ContainsKey(instanceID);
         }
 
-        static public void Preload(GameUnit prefab, int qty = 1, Transform parent = null, bool collect = false, bool clamp = false)
+        public static void Preload(GameUnit prefab, int qty = 1, Transform parent = null, bool collect = false, bool clamp = false)
         {
             if (!poolTypes.ContainsKey(prefab.poolType))
             {
@@ -194,27 +194,27 @@ namespace Project.Scripts.Pool
             }
         }
 
-        static public T Spawn<T>(PoolType poolType, Vector3 pos, Quaternion rot) where T : GameUnit
+        public static T Spawn<T>(PoolType poolType, Vector3 pos, Quaternion rot) where T : GameUnit
         {
             return Spawn(GetGameUnitByType(poolType), pos, rot) as T;
         }
     
-        static public T Spawn<T>(PoolType poolType) where T : GameUnit
+        public static T Spawn<T>(PoolType poolType) where T : GameUnit
         {
             return Spawn<T>(GetGameUnitByType(poolType));
         }
 
-        static public T Spawn<T>(GameUnit obj, Vector3 pos, Quaternion rot) where T : GameUnit
+        public static T Spawn<T>(GameUnit obj, Vector3 pos, Quaternion rot) where T : GameUnit
         {
             return Spawn(obj, pos, rot) as T;
         }
 
-        static public T Spawn<T>(GameUnit obj) where T : GameUnit
+        public static T Spawn<T>(GameUnit obj) where T : GameUnit
         {
             return Spawn(obj) as T;
         }
 
-        static public GameUnit Spawn(GameUnit obj, Vector3 pos, Quaternion rot)
+        public static GameUnit Spawn(GameUnit obj, Vector3 pos, Quaternion rot)
         {
             if (!poolInstanceID.ContainsKey(obj.GetInstanceID()))
             {
@@ -238,7 +238,7 @@ namespace Project.Scripts.Pool
             return poolInstanceID[obj.GetInstanceID()].Spawn();
         }
 
-        static public void Despawn(GameUnit obj)
+        public static void Despawn(GameUnit obj)
         {
             if (obj.gameObject.activeSelf)
             {
@@ -249,7 +249,7 @@ namespace Project.Scripts.Pool
             }
         }
 
-        static public void Release(GameUnit obj)
+        public static void Release(GameUnit obj)
         {
             if (pools.ContainsKey(obj.GetInstanceID()))
             {
@@ -262,13 +262,13 @@ namespace Project.Scripts.Pool
             }
         }
 
-        static public void Collect(GameUnit obj)
+        public static void Collect(GameUnit obj)
         {
             if (poolInstanceID.ContainsKey(obj.GetInstanceID()))
                 poolInstanceID[obj.GetInstanceID()].Collect();
         }
 
-        static public void CollectAll()
+        public static void CollectAll()
         {
             foreach (var item in poolInstanceID)
             {
