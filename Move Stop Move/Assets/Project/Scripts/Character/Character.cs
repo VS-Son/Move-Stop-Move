@@ -61,7 +61,7 @@ namespace Project.Scripts.Character
         }
 
 #endif
-        public static event Action SetNumberAlive;
+        public static event Action<Character> SetNumberAlive;
 
         protected virtual void OnInit()
         {
@@ -130,7 +130,7 @@ namespace Project.Scripts.Character
 
         public virtual void OnHit()
         {
-            SetNumberAlive?.Invoke();
+            SetNumberAlive?.Invoke(this);
             SimplePool.Despawn(this);
             RandomNavMeshSpawner.Instance.RemoveBot(this);
         }

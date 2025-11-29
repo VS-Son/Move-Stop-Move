@@ -1,4 +1,5 @@
 using System.Collections;
+using Project.Scripts.Character;
 using Project.Scripts.Level;
 using Project.Scripts.UI.Manager;
 using TMPro;
@@ -27,12 +28,14 @@ namespace Project.Scripts.UI.Screen
             aliveText.text = "Alive: " + _totalAlive;
         }
 
-        private void SetNumberAlive()
+        private void SetNumberAlive(Character.Character character)
         {
             _totalAlive--;
             aliveText.text = "Alive: " + _totalAlive;
             StartCoroutine(WaitGenerateBot());
-            if (RandomNavMeshSpawner.Instance.TotalAlive <= 1) StateUI.Instance.ChangeState(StateType.Victory);
+            if (_totalAlive <= 1 && character is Player player)
+                if (player.transform.gameObject.activeSelf)
+                    StateUI.Instance.ChangeState(StateType.Victory);
         }
 
         private IEnumerator WaitGenerateBot()
