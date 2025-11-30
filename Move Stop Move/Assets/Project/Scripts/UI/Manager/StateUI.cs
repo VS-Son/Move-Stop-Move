@@ -1,4 +1,5 @@
 using Project.Scripts.UI.Screen;
+using UnityEngine;
 
 namespace Project.Scripts.UI.Manager
 {
@@ -11,23 +12,25 @@ namespace Project.Scripts.UI.Manager
         Victory
     }
 
-    public class StateUI : Singleton<StateUI>
+    public class StateUI : MonoBehaviour
     {
-        private StateType _gameState;
+        private static StateType _gameState;
 
         private void Start()
         {
             ChangeState(StateType.MainMenu);
         }
 
-        public void ChangeState(StateType gameState)
+        public static void ChangeState(StateType gameState)
         {
             var uiManager = UIManager.Instance;
             _gameState = gameState;
             switch (_gameState)
             {
+                case StateType.MainMenu:
+                    uiManager.OpenUI<MainMenu>();
+                    break;
                 case StateType.Gameplay:
-                    uiManager.CloseUI<MainMenu>();
                     uiManager.OpenUI<GamePlay>();
                     break;
                 case StateType.Revive:
@@ -41,7 +44,7 @@ namespace Project.Scripts.UI.Manager
             }
         }
 
-        public bool IsState(StateType gameState)
+        public static bool IsState(StateType gameState)
         {
             return _gameState == gameState;
         }

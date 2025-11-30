@@ -25,7 +25,7 @@ namespace Project.Scripts.Camera
 
         private void FixedUpdate()
         {
-            if (StateUI.Instance.IsState(StateType.MainMenu))
+            if (StateUI.IsState(StateType.MainMenu))
             {
                 _transpose.m_FollowOffset = menuOffset;
                 cinemaCamera.transform.eulerAngles = menuRotation;

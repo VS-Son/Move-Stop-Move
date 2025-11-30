@@ -7,7 +7,8 @@ namespace Project.Scripts.UI.Screen
     {
         public void OnStartGame()
         {
-            StateUI.Instance.ChangeState(StateType.Gameplay);
+            StateUI.ChangeState(StateType.Gameplay);
+            CloseDirectly();
             RandomNavMeshSpawner.Instance.OnStartGame();
             UIManager.Instance.GetUI<GamePlay>().GetNumberAlive(RandomNavMeshSpawner.Instance.TotalAlive);
         }

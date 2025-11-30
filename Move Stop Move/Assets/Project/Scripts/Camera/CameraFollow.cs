@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Project.Scripts.Character;
+using Project.Scripts.Characters;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour

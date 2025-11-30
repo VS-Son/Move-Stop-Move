@@ -2,8 +2,9 @@ using Packages.JoystickPack.Scripts;
 using Project.Scripts.Anim;
 using Project.Scripts.UI.Manager;
 using UnityEngine;
+using System;
 
-namespace Project.Scripts.Character
+namespace Project.Scripts.Characters
 {
     public class Player : Character
     {
@@ -11,7 +12,8 @@ namespace Project.Scripts.Character
 
         private void Update()
         {
-            if (Input.GetMouseButton(0) && StateUI.Instance.IsState(StateType.Gameplay)) _isMoving = true;
+            if(StateUI.IsState(StateType.MainMenu)) return;
+            if (Input.GetMouseButton(0) && StateUI.IsState(StateType.Gameplay)) _isMoving = true;
             if (Input.GetMouseButtonUp(0))
             {
                 _isMoving = false;
@@ -26,7 +28,7 @@ namespace Project.Scripts.Character
                     ChangeAnim(Constants.AnimIdle);
                 }
             }
-
+            
             if (!_isMoving)
             {
                 if (HasEnemyInRange())
@@ -60,7 +62,7 @@ namespace Project.Scripts.Character
         public override void OnHit()
         {
             base.OnHit();
-            StateUI.Instance.ChangeState(StateType.Revive);
+            StateUI.ChangeState(StateType.Revive);
         }
     }
 }

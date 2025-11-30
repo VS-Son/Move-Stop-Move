@@ -705,7 +705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: totalAlive
-      value: 2
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: minDistance
@@ -714,6 +714,10 @@ PrefabInstance:
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: sampleRadius
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
+      propertyPath: characterAmount
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: spawnCharacterData.Array.size

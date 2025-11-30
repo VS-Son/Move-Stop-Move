@@ -2,15 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project.Scripts.Anim.EventAnim;
-using Project.Scripts.Character.Attack;
+using Project.Scripts.Characters.Attack;
 using Project.Scripts.Level;
 using Project.Scripts.Pool;
+using Project.Scripts.UI.Manager;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
-namespace Project.Scripts.Character
+namespace Project.Scripts.Characters
 {
-    public class Character : GameUnit
+    public enum CharacterType
+    {
+        Character,
+        Bot,
+        Player
+    }
+    public class Character : ColorObject
     {
         [SerializeField] protected Transform skin;
         [SerializeField] protected float speed;
@@ -61,7 +69,7 @@ namespace Project.Scripts.Character
         }
 
 #endif
-        public static event Action<Character> SetNumberAlive;
+        public static  event Action<Character> SetNumberAlive;
 
         protected virtual void OnInit()
         {
@@ -130,8 +138,9 @@ namespace Project.Scripts.Character
 
         public virtual void OnHit()
         {
-            SetNumberAlive?.Invoke(this);
             SimplePool.Despawn(this);
+            if(StateUI.IsState(StateType.Revive)) return;
+            SetNumberAlive?.Invoke(this );
             RandomNavMeshSpawner.Instance.RemoveBot(this);
         }
     }

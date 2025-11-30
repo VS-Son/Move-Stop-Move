@@ -1,8 +1,7 @@
-using System.Collections;
 using Project.Scripts.Pool;
 using UnityEngine;
 
-namespace Project.Scripts.Character.Attack
+namespace Project.Scripts.Characters.Attack
 {
     public class ThrowItem : GameUnit
     {
@@ -10,6 +9,7 @@ namespace Project.Scripts.Character.Attack
         private void OnTriggerEnter(Collider other)
         {
             var character = other.GetComponent<Character>();
+            
             if (other.CompareTag("Neutral"))
             {
                 SimplePool.Despawn(this);

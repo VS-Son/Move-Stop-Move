@@ -1,5 +1,6 @@
 using System.Collections;
 using Project.Scripts.Character;
+using Project.Scripts.Characters;
 using Project.Scripts.Level;
 using Project.Scripts.UI.Manager;
 using TMPro;
@@ -14,12 +15,12 @@ namespace Project.Scripts.UI.Screen
 
         private void OnEnable()
         {
-            Character.Character.SetNumberAlive += SetNumberAlive;
+            Characters.Character.SetNumberAlive += SetNumberAlive;
         }
 
         private void OnDisable()
         {
-            Character.Character.SetNumberAlive -= SetNumberAlive;
+            Characters.Character.SetNumberAlive -= SetNumberAlive;
         }
 
         public void GetNumberAlive(int count)
@@ -28,14 +29,20 @@ namespace Project.Scripts.UI.Screen
             aliveText.text = "Alive: " + _totalAlive;
         }
 
-        private void SetNumberAlive(Character.Character character)
+        private void SetNumberAlive(Characters.Character character)
         {
+           
             _totalAlive--;
             aliveText.text = "Alive: " + _totalAlive;
             StartCoroutine(WaitGenerateBot());
             if (_totalAlive <= 1 && character is Player player)
                 if (player.transform.gameObject.activeSelf)
-                    StateUI.Instance.ChangeState(StateType.Victory);
+                {
+                    StateUI.ChangeState(StateType.Victory);
+                    CloseDirectly();
+                }
+                    
+           
         }
 
         private IEnumerator WaitGenerateBot()
@@ -44,5 +51,6 @@ namespace Project.Scripts.UI.Screen
             if (_totalAlive > RandomNavMeshSpawner.Instance.ListBot.Count)
                 RandomNavMeshSpawner.Instance.GenerateCharacter(SpawnCharacterType.Bot);
         }
+        
     }
 }

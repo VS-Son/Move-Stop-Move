@@ -8,6 +8,8 @@
 
 using System;
 using System.Collections.Generic;
+using Project.Scripts.Character;
+using Project.Scripts.Characters;
 using UnityEngine;
 
 namespace Project.Scripts.Pool
@@ -80,7 +82,7 @@ namespace Project.Scripts.Pool
             {
                 GameUnit obj = Spawn();
 
-                obj.TF.SetPositionAndRotation( pos, rot);
+                obj.Tf.SetPositionAndRotation( pos, rot);
 
                 return obj;
             }

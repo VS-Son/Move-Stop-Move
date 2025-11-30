@@ -1,4 +1,6 @@
 using Project.Scripts.Anim;
+using Project.Scripts.Characters;
+using Project.Scripts.Characters.StateMachine;
 using UnityEngine;
 
 namespace Project.Scripts.Character.StateMachine

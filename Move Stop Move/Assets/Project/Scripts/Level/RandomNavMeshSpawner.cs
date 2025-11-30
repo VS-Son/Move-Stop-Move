@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Project.Scripts.Character;
+using Project.Scripts.Utility;
+using Project.Scripts.Character.ScriptableObject;
 using Project.Scripts.Character.StateMachine;
+using Project.Scripts.Characters;
+using Project.Scripts.Characters.StateMachine;
 using Project.Scripts.Pool;
 using Project.Scripts.UI.Manager;
 using Project.Scripts.UI.Screen;
@@ -24,18 +28,22 @@ public class SpawnCharacterData
 
 namespace Project.Scripts.Level
 {
+    
     public class RandomNavMeshSpawner : Singleton<RandomNavMeshSpawner>
     {
+        readonly List<ColorType> _colorTypes = new List<ColorType>() { ColorType.Default, ColorType.Black, ColorType.Red, ColorType.Blue, ColorType.Green, ColorType.Yellow, ColorType.Orange, ColorType.Brown, ColorType.Violet };
+
         [SerializeField] private List<SpawnCharacterData> spawnCharacterData = new();
-        [SerializeField] private int spawnCount;
+        [SerializeField] private int characterAmount;
         [SerializeField] private float minDistance;
         [SerializeField] private float sampleRadius;
-        [SerializeField] private int totalAlive = 10;
-
+        [SerializeField] private int totalAlive;
+        private List<ColorType> ShuffledColors => Utilities.SortOrder(_colorTypes, characterAmount);
         private readonly Vector3 _center = Vector3.zero;
+        private int _colorIndex = 0;
 
         private readonly Dictionary<SpawnCharacterType, string> _charactersType = new();
-        public readonly List<Character.Character> ListBot = new();
+        public readonly List<Characters.Character> ListBot = new();
         public List<Vector3> SpawnedPositions { get; } = new();
 
         public int TotalAlive
@@ -51,29 +59,41 @@ namespace Project.Scripts.Level
 
         private void Start()
         {
+            OnInit();
+            SpawnPrefab();
+        }
+
+        private void OnInit()
+        {
             UIManager.Instance.OpenUI<MainMenu>();
             foreach (var data in spawnCharacterData)
                 if (!_charactersType.ContainsKey(data.spawnCharacterType))
                     _charactersType.Add(data.spawnCharacterType, data.character);
-            SpawnPrefab();
+           
         }
 
         private void SpawnPrefab()
         {
             GenerateCharacter(SpawnCharacterType.Player);
-            var botNeeded = spawnCount - 1;
-
+            var botNeeded = characterAmount - 1;
             for (var i = 0; i < botNeeded; i++) GenerateCharacter(SpawnCharacterType.Bot);
         }
 
         public void GenerateCharacter(SpawnCharacterType type)
         {
             if (!_charactersType.TryGetValue(type, out var value)) return;
-            var prefab = Resources.Load<Character.Character>("Prefabs/Character/" + value);
+            var prefab = Resources.Load<Characters.Character>("Prefabs/Character/" + value);
             if (TryGetValidPosition(out var pos))
             {
-                var bot = SimplePool.Spawn<Bot>(prefab, pos, Quaternion.identity);
-                ListBot.Add(bot);
+                var character = SimplePool.Spawn<Characters.Character>(prefab, pos, Quaternion.identity);
+                var randomColors = ShuffledColors;
+                if (_colorIndex >= randomColors.Count)
+                    _colorIndex = 0;                 
+
+                var pickedColor = randomColors[_colorIndex];
+                _colorIndex++;
+                character.ChangeColor(pickedColor);
+                ListBot.Add(character);
             }
         }
 
@@ -122,9 +142,12 @@ namespace Project.Scripts.Level
         }
 
 
-        public void OnResetRandom()
+        public void OnResetPlayZone()
         {
-            foreach (var bot in ListBot) SimplePool.Despawn(bot);
+            foreach (var bot in ListBot)
+            {
+                SimplePool.Despawn(bot);
+            }
             ListBot.Clear();
             SpawnPrefab();
         }
@@ -136,10 +159,12 @@ namespace Project.Scripts.Level
                     bot.ChangeState(new PatrolState());
         }
 
-        public void RemoveBot(Character.Character character)
+        public void RemoveBot(Characters.Character character)
         {
             ListBot.Remove(character);
             Debug.Log("list bot" + ListBot.Count);
         }
     }
+
+    
 }
