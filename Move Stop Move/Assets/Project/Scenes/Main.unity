@@ -705,7 +705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: totalAlive
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 1737562814, guid: f2ab4b3b90b1d3d4eb16cd536e340a55, type: 3}
       propertyPath: minDistance
